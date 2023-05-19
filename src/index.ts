@@ -4,6 +4,7 @@ dotenv.config();
 import fs from "fs";
 import cors from "cors";
 import path from "path";
+import mongoose from "mongoose";
 
 // cors
 const corsOptions = {
@@ -25,6 +26,10 @@ const port = process.env.PORT || 4000;
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });
+// database
+mongoose
+    .connect(process.env.MONGODB_URI as string)
+    .catch((error) => console.log(error.stack));
 
 function walk(dir: string) {
     let results: Array<string> = [];

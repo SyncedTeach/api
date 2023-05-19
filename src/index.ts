@@ -30,6 +30,9 @@ app.listen(port, () => {
 mongoose
     .connect(process.env.MONGODB_URI as string)
     .catch((error) => console.log(error.stack));
+mongoose.connection.on("connected", async () => {
+    console.log("Connected to database!");
+});
 
 function walk(dir: string) {
     let results: Array<string> = [];

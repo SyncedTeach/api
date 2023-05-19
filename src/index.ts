@@ -11,28 +11,54 @@ const corsOptions = {
     origin: "http://localhost:3000",
 };
 
+
 // app
 const app: express.Application = express().disable("x-powered-by");
 app.use(cors(corsOptions));
+
+// db
+let db_avalaible = false;
+
+app.use((req, res, next) => {
+    if (!db_avalaible) {
+        res.status(500).send("Database connection failed!");
+    } else {
+        next();
+    }
+});
+
 // routes and folders as sub paths
 walk(path.join(__dirname, "routes")).forEach((file: string) => {
     let path = file.substring("./routes".length);
     path = path.substring(0, path.length - 3);
+
     app.use(require(file).router);
 });
+
+// error handling in case route error wont crash the server
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error(err.stack);
+    res.status(500).send("Something broke!");
+});
+
+
+
 
 // server
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });
+
 // database
 mongoose
     .connect(process.env.MONGODB_URI as string)
-    .catch((error) => console.log(error.stack));
+    .catch((err) =>{console.log(err); db_avalaible=false;});
 mongoose.connection.on("connected", async () => {
     console.log("Connected to database!");
+    db_avalaible = true;
 });
+
 
 function walk(dir: string) {
     let results: Array<string> = [];

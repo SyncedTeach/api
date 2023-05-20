@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { User } from "../models/User";
+import { checkHTML, checkMongoDB } from "../utilities/sanitize";
 
 function createID(length: number): string {
     let result = "";
@@ -18,6 +19,16 @@ async function login(username: string, password: string) {
         message: "",
         success: false,
     };
+
+    if (!checkHTML(username) || !checkMongoDB(username)) {
+        info.message = "Invalid username!";
+        return info;
+    }
+
+    if (!checkHTML(password) || !checkMongoDB(password)) {
+        info.message = "Invalid password!";
+        return info;
+    }
 
     if (!user) {
         info.message = "User not found!";

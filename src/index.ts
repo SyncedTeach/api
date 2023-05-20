@@ -11,16 +11,15 @@ const corsOptions = {
     origin: "http://localhost:3000",
 };
 
-
 // app
 const app: express.Application = express().disable("x-powered-by");
 app.use(cors(corsOptions));
 
 // db
-let db_avalaible = false;
+let db_available = false;
 
 app.use((req, res, next) => {
-    if (!db_avalaible) {
+    if (!db_available) {
         res.status(500).send("Database connection failed!");
     } else {
         next();
@@ -36,13 +35,17 @@ walk(path.join(__dirname, "routes")).forEach((file: string) => {
 });
 
 // error handling in case route error wont crash the server
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.error(err.stack);
-    res.status(500).send("Something broke!");
-});
-
-
-
+app.use(
+    (
+        err: Error,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+    ) => {
+        console.error(err.stack);
+        res.status(500).send("Something broke!");
+    }
+);
 
 // server
 const port = process.env.PORT || 4000;
@@ -51,14 +54,14 @@ app.listen(port, () => {
 });
 
 // database
-mongoose
-    .connect(process.env.MONGODB_URI as string)
-    .catch((err) =>{console.log(err); db_avalaible=false;});
+mongoose.connect(process.env.MONGODB_URI as string).catch((err) => {
+    console.log(err);
+    db_available = false;
+});
 mongoose.connection.on("connected", async () => {
     console.log("Connected to database!");
-    db_avalaible = true;
+    db_available = true;
 });
-
 
 function walk(dir: string) {
     let results: Array<string> = [];

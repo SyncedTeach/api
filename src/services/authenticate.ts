@@ -53,17 +53,30 @@ async function register(
     password: string,
     personal_email: string
 ) {
-    let alrUsername = await User.findOne({ username: username });
-    let alrPersonalEmail = await User.findOne({
-        personalEmail: personal_email,
-    });
-
     let info = {
         token: "",
         message: "",
         success: false,
     };
 
+    if (!checkHTML(username) || !checkMongoDB(username)) {
+        info.message = "Invalid username!";
+        return info;
+    }
+
+    if (!checkHTML(password) || !checkMongoDB(password)) {
+        info.message = "Invalid password!";
+        return info;
+    }
+    if (!checkHTML(personal_email) || !checkMongoDB(personal_email)) {
+        info.message = "Invalid personal e-mail!";
+        return info;
+    }
+
+    let alrUsername = await User.findOne({ username: username });
+    let alrPersonalEmail = await User.findOne({
+        personalEmail: personal_email,
+    });
     if (alrUsername || alrPersonalEmail) {
         info.message = "Username or personal email already exists!";
         return info;

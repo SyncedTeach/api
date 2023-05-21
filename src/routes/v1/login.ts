@@ -13,8 +13,10 @@ router.post(
             // positive result: send cookie
             res.cookie("username", req.body.username, { httpOnly: true });
             res.cookie("sessionToken", result.token, { httpOnly: true });
+            return res.status(200).send(result);
         }
-        res.status(200).json(result);
+        // negative result: send error
+        return res.status(401).send(result);
     }
 );
 

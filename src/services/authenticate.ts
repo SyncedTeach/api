@@ -84,7 +84,7 @@ async function register(
         username: username,
         password: await bcrypt.hash(password, 10),
         personalEmail: personal_email,
-        token: hashedToken,
+        sessionTokens: [hashedToken],
     });
 
     await user.save();

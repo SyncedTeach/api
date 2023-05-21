@@ -7,8 +7,8 @@ router.post(
     "/v1/login",
     jsonParser,
     async (req: express.Request, res: express.Response) => {
-        console.log("log in request!");
-        res.json(await login(req.body.username, req.body.password));
+        let result = await login(req.body.username, req.body.password);
+        res.status(200).json(result);
     }
 );
 

@@ -1,14 +1,7 @@
 import bcrypt from "bcrypt";
 import { User } from "../models/User";
 import { checkHTML, checkMongoDB } from "../utilities/sanitize";
-
-function createID(length: number): string {
-    let result = "";
-    let pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (let i = 0; i < length; i++)
-        result += pool.charAt(Math.floor(Math.random() * pool.length));
-    return result;
-}
+import { createToken } from "./token";
 
 // TODO: VALIDATE DATA!!!!!!!!!!!!!!!!!!!
 async function login(username: string, password: string) {
@@ -27,23 +20,25 @@ async function login(username: string, password: string) {
         info.message = "Invalid password!";
         return info;
     }
-
     let user = await User.findOne({ username: username });
     if (!user) {
         info.message = "User not found!";
         return info;
     }
-    if (await bcrypt.compare(password, user.password)) {
-        let token = createID(64);
-        let currentToken = user.sessionTokens;
-        currentToken.push(token);
-        user.sessionTokens = currentToken;
-        await user.save();
-        info.token = token;
-        info.success = true;
-        info.message = "User logged in!";
+    let passwordResult = await bcrypt.compare(password, user.password);
+    if (!passwordResult) {
+        info.message = "Incorrect Password!";
         return info;
     }
+    let token = await createToken(64);
+    let currentToken = user.sessionTokens;
+    currentToken.push(token);
+    user.sessionTokens = currentToken;
+    await user.save();
+    info.token = token;
+    info.success = true;
+    info.message = "User logged in!";
+    return info;
 }
 
 // TODO: Create a user and return a token
@@ -81,7 +76,7 @@ async function register(
         return info;
     }
 
-    const token = createID(64);
+    const token = await createToken(64);
     // create user with a default structure
     let user = new User({
         username: username,

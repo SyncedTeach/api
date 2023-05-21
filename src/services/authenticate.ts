@@ -21,21 +21,29 @@ async function login(username: string, password: string) {
         return info;
     }
     let user = await User.findOne({ username: username });
-    if (!user) {
-        info.message = "User not found!";
+    let email = await User.findOne({ personalEmail: username });
+
+    if (!user && !email) {
+        info.message = "User/Email not found!";
         return info;
     }
-    let passwordResult = await bcrypt.compare(password, user.password);
+    let userResult = user ? user : email;
+    if (!userResult) {
+        info.message = "User/Email not found!";
+        return info;
+    }
+    
+    let passwordResult = await bcrypt.compare(password, userResult.password);
     if (!passwordResult) {
         info.message = "Incorrect Password!";
         return info;
     }
     let token = await createToken(128);
     let hashedToken = await bcrypt.hash(token, 8);
-    let currentToken = user.sessionTokens;
+    let currentToken = userResult.sessionTokens;
     currentToken.push(hashedToken);
-    user.sessionTokens = currentToken;
-    await user.save();
+    userResult.sessionTokens = currentToken;
+    await userResult.save();
     info.token = token;
     info.success = true;
     info.message = "User logged in!";

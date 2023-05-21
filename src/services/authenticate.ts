@@ -12,8 +12,6 @@ function createID(length: number): string {
 
 // TODO: VALIDATE DATA!!!!!!!!!!!!!!!!!!!
 async function login(username: string, password: string) {
-    let user = await User.findOne({ username: username });
-
     let info = {
         token: "",
         message: "",
@@ -30,6 +28,7 @@ async function login(username: string, password: string) {
         return info;
     }
 
+    let user = await User.findOne({ username: username });
     if (!user) {
         info.message = "User not found!";
         return info;

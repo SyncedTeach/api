@@ -18,7 +18,7 @@ interface IUser {
     apiKey: string;
 }
 
-const userSchema = new Schema({
+const userSchema = new Schema<IUser>({
     name: String,
     username: String,
     userID: String,

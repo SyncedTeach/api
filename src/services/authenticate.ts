@@ -30,9 +30,10 @@ async function login(username: string, password: string) {
         info.message = "Incorrect Password!";
         return info;
     }
-    let token = await createToken(64);
+    let token = await createToken(128);
+    let hashedToken = await bcrypt.hash(token, 8);
     let currentToken = user.sessionTokens;
-    currentToken.push(token);
+    currentToken.push(hashedToken);
     user.sessionTokens = currentToken;
     await user.save();
     info.token = token;
@@ -76,13 +77,14 @@ async function register(
         return info;
     }
 
-    const token = await createToken(64);
+    let token = await createToken(128);
+    let hashedToken = await bcrypt.hash(token, 8);
     // create user with a default structure
     let user = new User({
         username: username,
         password: await bcrypt.hash(password, 10),
         personalEmail: personal_email,
-        token: token,
+        token: hashedToken,
     });
 
     await user.save();

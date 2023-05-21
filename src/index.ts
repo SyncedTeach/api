@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 // cors
 const corsOptions = {
     origin: "http://localhost:3000",
+    credentials: true,
 };
 
 // app

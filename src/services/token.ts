@@ -15,14 +15,14 @@ async function checkOwnerOfToken(token: string, username: string) {
     if (!checkHTML(username) || !checkMongoDB(username)) {
         return result;
     }
-    let owner = User.findOne({ username: username });
+    let owner = await User.findOne({ username: username });
     if (!owner) {
         return result;
     }
     // TODO: Change from any to something else.
-    let ownerObject: any = owner.lean();
+    let ownerObject = owner;
     let tokens = ownerObject.sessionTokens;
-    for (let hashedToken in tokens) {
+    for (let hashedToken of tokens) {
         if (await bcrypt.compare(token, hashedToken)) {
             result.success = true;
             return result;

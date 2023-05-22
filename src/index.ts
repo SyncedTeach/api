@@ -21,6 +21,10 @@ app.use(cors(corsOptions));
 let db_available = false;
 
 app.use((req, res, next) => {
+    if (req.path.includes("/v1/setup/")) {
+        next();
+        return;
+    }
     if (!db_available) {
         res.status(500).json({
             success: false,

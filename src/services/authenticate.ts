@@ -32,13 +32,13 @@ async function login(username: string, password: string) {
         info.message = "User/Email not found!";
         return info;
     }
-    
+
     let passwordResult = await bcrypt.compare(password, userResult.password);
     if (!passwordResult) {
         info.message = "Incorrect Password!";
         return info;
     }
-    let token = await createToken(128);
+    let token = await createToken(32);
     let hashedToken = await bcrypt.hash(token, 8);
     let currentToken = userResult.sessionTokens;
     currentToken.push(hashedToken);
@@ -85,7 +85,7 @@ async function register(
         return info;
     }
 
-    let token = await createToken(128);
+    let token = await createToken(32);
     let hashedToken = await bcrypt.hash(token, 8);
     // create user with a default structure
     let user = new User({

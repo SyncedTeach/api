@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 router.post(
-    "/v1/checkToken",
+    "/v1/check-token",
     [jsonParser, cookieParser()],
     async (req: express.Request, res: express.Response) => {
         let result = await checkOwnerOfToken(

@@ -14,25 +14,17 @@ router.post(
         let email = req.body.personal_email;
 
         // filter out bad requests
-        if (!checkHTML(username) || !checkMongoDB(username)) {
-            return res.status(400).json({
-                error: "Bad request!",
-            });
-        }
-
-        if (!checkHTML(password) || !checkMongoDB(password)) {
-            return res.status(400).json({
-                error: "Bad request!",
-            });
-        }
-
-        if (!checkHTML(email) || !checkMongoDB(email)) {
-            return res.status(400).json({
-                error: "Bad request!",
-            });
-        }
-
-        if (!username || !password || !email) {
+        if (
+            !username ||
+            !password ||
+            !email ||
+            !checkHTML(username) ||
+            !checkMongoDB(username) ||
+            !checkHTML(password) ||
+            !checkMongoDB(password) ||
+            !checkHTML(email) ||
+            !checkMongoDB(email)
+        ) {
             return res.status(400).json({
                 error: "Bad request!",
             });

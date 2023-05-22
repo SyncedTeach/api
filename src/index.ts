@@ -22,7 +22,11 @@ let db_available = false;
 
 app.use((req, res, next) => {
     if (!db_available) {
-        res.status(500).send("Database connection failed!");
+        res.status(500).json({
+            success: false,
+            error: "Database not available",
+        });
+        
     } else {
         next();
     }

@@ -2,6 +2,7 @@ import express from "express";
 import { checkHTML, checkMongoDB } from "../../utilities/sanitize";
 import { register } from "../../services/authenticate";
 import bodyParser from "body-parser";
+import { logWrite } from "../../utilities/log";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 router.post(
@@ -56,7 +57,7 @@ router.post(
             });
         }
 
-        console.log("register request!");
+        logWrite.info("register request!");
         res.json(await register(username, password, email));
     }
 );

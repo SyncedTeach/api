@@ -5,6 +5,7 @@ import fs from "fs";
 import cors from "cors";
 import path from "path";
 import mongoose from "mongoose";
+import { logWrite } from "./utilities/log";
 
 // cors
 const corsOptions = {
@@ -51,16 +52,16 @@ app.use(
 // server
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
+    logWrite.info(`Server listening on port ${port}`);
 });
 
 // database
 mongoose.connect(process.env.MONGODB_URI as string).catch((err) => {
-    console.log(err);
+    logWrite.error(err);
     db_available = false;
 });
 mongoose.connection.on("connected", async () => {
-    console.log("Connected to database!");
+    logWrite.info("Connected to database!");
     db_available = true;
 });
 

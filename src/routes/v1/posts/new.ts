@@ -33,7 +33,7 @@ router.post(
         // check if user has permissions
         let username = cookies.username;
         let rankResult = await isAdmin(username);
-        if (!rankResult) {
+        if (!rankResult.success) {
             logWrite.info(
                 `Failed to create post for user ${cookies.username}: Low rank`
             );

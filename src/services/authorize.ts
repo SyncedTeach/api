@@ -14,53 +14,6 @@ enum Rank {
     student = "student",
     parent = "parent",
 }
-// TODO: Add more overloads
-// NOTE: isAdmin is either normal or super admin
-async function isAdmin(username: string) {
-    let info = {
-        message: "",
-        success: false,
-    };
-    if (!checkHTML(username) || !checkMongoDB(username)) {
-        info.message = "Invalid username!";
-        return info;
-    }
-    let user = await User.findOne({ username: username });
-    if (!user) {
-        info.message = "User not found!";
-        return info;
-    }
-
-    if (
-        user.membership.isAdministrator ||
-        user.membership.isSuperAdministrator
-    ) {
-        info.success = true;
-    }
-    return info;
-}
-
-async function isSuperAdmin(username: string) {
-    let info = {
-        message: "",
-        success: false,
-    };
-    if (!checkHTML(username) || !checkMongoDB(username)) {
-        info.message = "Invalid username!";
-        return info;
-    }
-    let user = await User.findOne({ username: username });
-    if (!user) {
-        info.message = "User not found!";
-        return info;
-    }
-
-    if (user.membership.isSuperAdministrator) {
-        info.success = true;
-    }
-    return info;
-}
-
 async function checkRank(username: string, rank: string | string[]) {
     let result = {
         success: false,
@@ -116,4 +69,18 @@ async function getRanks(username: string) {
     return result;
 }
 
-export { isSuperAdmin, isAdmin, checkRank, RANKS };
+async function safeFindUserByID(id: string) {
+    let user = await User.findOne({ _id: id }).select({
+        password: 0,
+        personalEmail: 0,
+        apiKey: 0,
+        sessionTokens: 0,
+        sessionTokensWithExpiryTime: 0,
+    });
+    if (!user) {
+        return null;
+    }
+    return user;
+}
+
+export { safeFindUserByID, checkRank, RANKS };

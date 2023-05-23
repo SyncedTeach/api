@@ -19,6 +19,19 @@
         "student",
         "parent"
       ]
+    },
+    "dataAccess": {
+      "full": [
+        "administrator",
+        "superAdministrator"
+      ],
+      "self": [
+        "teacher",
+        "student",
+        "parent",
+        "administrator",
+        "superAdministrator"
+      ]
     }
   }
 }

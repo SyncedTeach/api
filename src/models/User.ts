@@ -11,6 +11,9 @@ interface IUser {
         isSuperAdministrator: boolean;
         isAdministrator: boolean;
         isNormalUser: boolean;
+        isTeacher: boolean;
+        isStudent: boolean;
+        isParent: boolean;
     };
     statistics: object;
     sessionTokensWithExpiryTime: [string];
@@ -29,6 +32,9 @@ const userSchema = new Schema<IUser>({
         isSuperAdministrator: Boolean,
         isAdministrator: Boolean,
         isNormalUser: Boolean,
+        isTeacher: Boolean,
+        isStudent: Boolean,
+        isParent: Boolean,
     },
     statistics: Object,
     sessionTokensWithExpiryTime: [String],

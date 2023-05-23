@@ -1,0 +1,12 @@
+{
+  "authorization": {
+    "emailRegEx": ".*",
+    "posting": {
+      "announcement": 2,
+      "regular": 1
+    },
+    "commenting": {
+      "regular": 1
+    }
+  }
+}

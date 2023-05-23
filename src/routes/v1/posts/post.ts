@@ -1,6 +1,4 @@
 import express from "express";
-import { checkOwnerOfToken } from "../../../services/token";
-import { isAdmin } from "../../../services/authorize";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
@@ -19,7 +17,7 @@ router.get(
             owner: "",
         };
         let id = req.params.id;
-        if (!/[0-9a-f]{24}/.test(id) || !checkHTML(id) || !checkMongoDB(id)) {
+        if (!/^[0-9a-f]{24}$/.test(id) || !checkHTML(id) || !checkMongoDB(id)) {
             res.json(result);
             return;
         }

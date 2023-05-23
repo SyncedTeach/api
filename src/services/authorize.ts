@@ -1,4 +1,5 @@
 import { User } from "../models/User";
+import { logWrite } from "../utilities/log";
 import { checkHTML, checkMongoDB } from "../utilities/sanitize";
 const RANKS = {
     superAdministrator: "isSuperAdministrator",
@@ -70,6 +71,10 @@ async function getRanks(username: string) {
 }
 
 async function safeFindUserByID(id: string) {
+    if (!/^[0-9a-f]{24}$/.test(id)) {
+        logWrite.warn(`${id} is not a valid ObjectId string.`);
+        return null;
+    }
     let user = await User.findOne({ _id: id }).select({
         password: 0,
         personalEmail: 0,

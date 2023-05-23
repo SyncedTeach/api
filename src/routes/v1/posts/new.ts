@@ -26,7 +26,7 @@ router.post(
         );
         if (!cookieResult.success) {
             logWrite.info(
-                `Failed to create post for user ${cookies.username}: Invalid cookies`
+                `Did not create post for ${cookies.username}: Invalid cookies`
             );
             res.json(result);
             return result;
@@ -39,7 +39,7 @@ router.post(
         );
         if (!rankResult.success) {
             logWrite.info(
-                `Failed to create post for user ${cookies.username}: Low rank`
+                `Did not create post for ${cookies.username}: Low rank`
             );
             res.json(result);
             return result;
@@ -47,7 +47,7 @@ router.post(
         // sanitize/validate data
         if (!checkHTML(content) || !checkMongoDB(content)) {
             logWrite.info(
-                `Failed to create post for user ${cookies.username}: Illegal post`
+                `Did not create post for ${cookies.username}: Illegal post`
             );
             res.json(result);
             return result;

@@ -26,6 +26,7 @@ router.post(
             !checkHTML(email) ||
             !checkMongoDB(email)
         ) {
+            logWrite.info(`Unable to let ${username} log in: Bad Request`);
             return res.status(400).json({
                 error: "Bad request!",
             });
@@ -33,24 +34,32 @@ router.post(
 
         // actually process request
         if (username.length < 3 || username.length > 20) {
+            logWrite.info(
+                `Unable to let ${username} register: Invalid username`
+            );
             return res.status(400).json({
                 error: "Username must be between 3 and 20 characters!",
             });
         }
 
         if (password.length < 8 || password.length > 20) {
+            logWrite.info(
+                `Unable to let ${username} register: Invalid password`
+            );
             return res.status(400).json({
                 error: "Password must be between 8 and 20 characters!",
             });
         }
 
         if (email.length < 3 || email.length > 50) {
+            logWrite.info(`Unable to let ${username} register: Invalid e-mail`);
             return res.status(400).json({
                 error: "Email must be between 3 and 50 characters!",
             });
         }
 
         if (!email.match(configuration.authorization.emailRegEx)) {
+            logWrite.info(`Unable to let ${username} register: Bad e-mail`);
             return res.status(400).json({
                 error: "Email not authorized!",
             });

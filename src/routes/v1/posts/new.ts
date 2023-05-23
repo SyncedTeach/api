@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
 import { addPost } from "../../../services/post";
+import { logWrite } from "../../../utilities/log";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 // TODO: add logging
@@ -23,6 +24,9 @@ router.post(
             cookies.username || ""
         );
         if (!cookieResult.success) {
+            logWrite.info(
+                `Failed to create post for user ${cookies.username}: Invalid cookies`
+            );
             res.json(result);
             return result;
         }
@@ -30,15 +34,22 @@ router.post(
         let username = cookies.username;
         let rankResult = await isAdmin(username);
         if (!rankResult) {
+            logWrite.info(
+                `Failed to create post for user ${cookies.username}: Low rank`
+            );
             res.json(result);
             return result;
         }
         // sanitize/validate data
         if (!checkHTML(content) || !checkMongoDB(content)) {
+            logWrite.info(
+                `Failed to create post for user ${cookies.username}: Illegal post`
+            );
             res.json(result);
             return result;
         }
         addPost(content, username);
+        logWrite.info(`Successfully created new post for ${cookies.username}`);
         result.success = true;
         res.json(result);
         return result;

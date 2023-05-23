@@ -20,7 +20,7 @@ router.post(
         let cookies = req.cookies;
         let cookieResult = await checkOwnerOfToken(
             cookies.sessionToken || "",
-            cookies.username
+            cookies.username || ""
         );
         if (!cookieResult.success) {
             res.json(result);

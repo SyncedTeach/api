@@ -1,11 +1,12 @@
 import express from "express";
 import { checkOwnerOfToken } from "../../../services/token";
-import { isAdmin } from "../../../services/authorize";
+import { checkRank } from "../../../services/authorize";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
 import { addPost } from "../../../services/post";
 import { logWrite } from "../../../utilities/log";
+import configuration from "../../../configuration.json";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 // TODO: add logging
@@ -32,7 +33,10 @@ router.post(
         }
         // check if user has permissions
         let username = cookies.username;
-        let rankResult = await isAdmin(username);
+        let rankResult = await checkRank(
+            username,
+            configuration.authorization.posting.regular
+        );
         if (!rankResult.success) {
             logWrite.info(
                 `Failed to create post for user ${cookies.username}: Low rank`

@@ -3,6 +3,7 @@ import { checkHTML, checkMongoDB } from "../../utilities/sanitize";
 import { register } from "../../services/authenticate";
 import bodyParser from "body-parser";
 import { logWrite } from "../../utilities/log";
+import configuration from "../../configuration.json";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 router.post(
@@ -46,6 +47,12 @@ router.post(
         if (email.length < 3 || email.length > 50) {
             return res.status(400).json({
                 error: "Email must be between 3 and 50 characters!",
+            });
+        }
+
+        if (!email.match(configuration.authorization.emailRegEx)) {
+            return res.status(400).json({
+                error: "Email not authorized!",
             });
         }
 

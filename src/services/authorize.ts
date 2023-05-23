@@ -48,4 +48,28 @@ async function isSuperAdmin(username: string) {
     return info;
 }
 
-export { isSuperAdmin, isAdmin };
+async function checkRank(username: string, criteria: number) {
+    let result = {
+        success: false,
+    };
+    if (!checkHTML(username) || !checkMongoDB(username)) {
+        return result;
+    }
+    let user = await User.findOne({ username: username });
+    if (!user) {
+        return result;
+    }
+    let rank = 1;
+    if (user.membership.isAdministrator) {
+        rank = 2;
+    }
+    if (user.membership.isSuperAdministrator) {
+        rank = 3;
+    }
+    if (rank >= criteria) {
+        result.success = true;
+    }
+    return result;
+}
+
+export { isSuperAdmin, isAdmin, checkRank };

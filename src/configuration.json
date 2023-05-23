@@ -2,11 +2,23 @@
   "authorization": {
     "emailRegEx": ".*",
     "posting": {
-      "announcement": 2,
-      "regular": 1
+      "announcement": [
+        "teacher",
+        "administrator",
+        "superAdministrator"
+      ],
+      "regular": [
+        "teacher",
+        "student",
+        "parent"
+      ]
     },
     "commenting": {
-      "regular": 1
+      "regular": [
+        "teacher",
+        "student",
+        "parent"
+      ]
     }
   }
 }

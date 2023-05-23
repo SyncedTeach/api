@@ -19,7 +19,7 @@ router.post(
         // check if user is real
         let cookies = req.cookies;
         let cookieResult = await checkOwnerOfToken(
-            cookies.sessionToken,
+            cookies.sessionToken || "",
             cookies.username
         );
         if (!cookieResult.success) {

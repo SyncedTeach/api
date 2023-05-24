@@ -31,7 +31,7 @@ async function addToGroup(
   }
   await Group.findOneAndUpdate(
     { joinCode: joinCode },
-    { $push: { members: userID } }
+    { $addToSet: { members: userID } }
   );
 }
 

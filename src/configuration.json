@@ -32,6 +32,14 @@
         "administrator",
         "superAdministrator"
       ]
+    },
+    "groups": {
+      "create": [
+        "administrator",
+        "superAdministrator",
+        "teacher",
+        "student"
+      ]
     }
   }
 }

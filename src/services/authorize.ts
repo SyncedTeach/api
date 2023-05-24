@@ -88,4 +88,18 @@ async function safeFindUserByID(id: string) {
   return user;
 }
 
-export { safeFindUserByID, checkRank, RANKS };
+async function safeFindUserByUsername(username: string) {
+  let user = await User.findOne({ username: username }).select({
+    password: 0,
+    personalEmail: 0,
+    apiKey: 0,
+    sessionTokens: 0,
+    sessionTokensWithExpiryTime: 0,
+  });
+  if (!user) {
+    return null;
+  }
+  return user;
+}
+
+export { safeFindUserByID, safeFindUserByUsername, checkRank, RANKS };

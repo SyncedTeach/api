@@ -1,19 +1,21 @@
-import { Schema, model } from "mongoose";
+import { ObjectId, Schema, model } from "mongoose";
 
 interface IPost {
   // metadata
   title: string;
-  owner: string;
+  owner: Schema.Types.ObjectId;
   dateTime: Date;
   lastEditDateTime: Date;
+  location: string;
   // data
   content: string;
 }
 
 const postSchema = new Schema<IPost>({
   title: String,
-  owner: String,
+  owner: Schema.Types.ObjectId,
   dateTime: Date,
+  location: Schema.Types.ObjectId,
   lastEditDateTime: Date,
   content: String,
 });

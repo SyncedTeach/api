@@ -4,17 +4,17 @@ import { checkRank, safeFindUserByUsername } from "../../../services/authorize";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
-import { addPost } from "../../../services/post";
+import { addGroup } from "../../../services/group";
 import { logWrite } from "../../../utilities/log";
 import configuration from "../../../configuration.json";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 // TODO: add logging
 router.post(
-  "/v1/posts/new",
+  "/v1/groups/new",
   [jsonParser, cookieParser()],
   async (req: express.Request, res: express.Response) => {
-    let content = req.body["post-content"];
+    let name = req.body["group-name"];
     let result = {
       success: false,
     };
@@ -26,7 +26,7 @@ router.post(
     );
     if (!cookieResult.success) {
       logWrite.info(
-        `Did not create post for ${cookies.username}: Invalid cookies`
+        `Did not create group for ${cookies.username}: Invalid cookies`
       );
       res.json(result);
       return result;
@@ -35,17 +35,17 @@ router.post(
     let username = cookies.username;
     let rankResult = await checkRank(
       username,
-      configuration.authorization.posting.regular
+      configuration.authorization.groups.create
     );
     if (!rankResult.success) {
-      logWrite.info(`Did not create post for ${cookies.username}: Low rank`);
+      logWrite.info(`Did not create group for ${cookies.username}: Low rank`);
       res.json(result);
       return result;
     }
     // sanitize/validate data
-    if (!checkHTML(content) || !checkMongoDB(content)) {
+    if (!checkHTML(name) || !checkMongoDB(name)) {
       logWrite.info(
-        `Did not create post for ${cookies.username}: Illegal post`
+        `Did not create group for ${cookies.username}: Illegal group`
       );
       res.json(result);
       return result;
@@ -53,8 +53,8 @@ router.post(
     let userObject = await safeFindUserByUsername(username);
     // we already know username exists because we checked it
     let userID = userObject?._id || "";
-    addPost(content, username, userID);
-    logWrite.info(`Successfully created new post for ${cookies.username}`);
+    addGroup(name, username, userID);
+    logWrite.info(`Successfully created new group for ${cookies.username}`);
     result.success = true;
     res.json(result);
     return result;

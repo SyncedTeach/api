@@ -3,7 +3,7 @@ import { ObjectId, Schema, model } from "mongoose";
 interface IPost {
   // metadata
   title: string;
-  owner: string;
+  owner: Schema.Types.ObjectId;
   dateTime: Date;
   lastEditDateTime: Date;
   location: string;
@@ -13,7 +13,7 @@ interface IPost {
 
 const postSchema = new Schema<IPost>({
   title: String,
-  owner: String,
+  owner: Schema.Types.ObjectId,
   dateTime: Date,
   location: Schema.Types.ObjectId,
   lastEditDateTime: Date,

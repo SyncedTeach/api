@@ -32,6 +32,8 @@ router.post(
     // we already know username exists because we checked it
     let userID = userObject?._id || "";
     addToGroup(req.params.joinCode, userID);
+    // TODO: this
+    res.json({});
   }
 );
 export { router };

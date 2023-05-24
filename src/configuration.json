@@ -1,0 +1,37 @@
+{
+  "authorization": {
+    "emailRegEx": ".*",
+    "posting": {
+      "announcement": [
+        "teacher",
+        "administrator",
+        "superAdministrator"
+      ],
+      "regular": [
+        "teacher",
+        "student",
+        "parent"
+      ]
+    },
+    "commenting": {
+      "regular": [
+        "teacher",
+        "student",
+        "parent"
+      ]
+    },
+    "dataAccess": {
+      "full": [
+        "administrator",
+        "superAdministrator"
+      ],
+      "self": [
+        "teacher",
+        "student",
+        "parent",
+        "administrator",
+        "superAdministrator"
+      ]
+    }
+  }
+}

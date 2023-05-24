@@ -6,19 +6,19 @@ const window = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 
 function checkHTML(original: string) {
-    return sanitizeHTML(original) === original;
+  return sanitizeHTML(original) === original;
 }
 
 function sanitizeHTML(original: string) {
-    return DOMPurify.sanitize(original);
+  return DOMPurify.sanitize(original);
 }
 
 function checkMongoDB(original: string) {
-    return sanitizeMongoDB(original) === original;
+  return sanitizeMongoDB(original) === original;
 }
 
 function sanitizeMongoDB(original: string) {
-    return mongoSanitize.sanitize(original);
+  return mongoSanitize.sanitize(original);
 }
 
 export { checkHTML, sanitizeHTML, checkMongoDB, sanitizeMongoDB };

@@ -4,23 +4,25 @@ var router = express.Router();
 import bodyParser from "body-parser";
 var jsonParser = bodyParser.json();
 
-router.post("/v1/setup/finish", jsonParser, async (req: express.Request, res: express.Response) => {
-
+router.post(
+  "/v1/setup/finish",
+  jsonParser,
+  async (req: express.Request, res: express.Response) => {
     const key = req.body.secretKey;
     const mongoURI = req.body.mongoDBConnectionString;
 
     if (!key) {
-        return res.status(400).json({
-            error: "Bad request!",
-        });
+      return res.status(400).json({
+        error: "Bad request!",
+      });
     }
 
     const result = await setup.start(key, mongoURI);
 
     res.status(200).json({
-        result
+      result,
     });
-});
+  }
+);
 
 export { router };
-

@@ -1,6 +1,6 @@
 import express from "express";
 import { checkOwnerOfToken } from "../../../services/token";
-import { checkRank } from "../../../services/authorize";
+import { checkRank, safeFindUserByUsername } from "../../../services/authorize";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
@@ -50,7 +50,10 @@ router.post(
       res.json(result);
       return result;
     }
-    addPost(content, username);
+    let userObject = await safeFindUserByUsername(username);
+    // we already know username exists because we checked it
+    let userID = userObject?._id || "";
+    addPost(content, username, userID);
     logWrite.info(`Successfully created new post for ${cookies.username}`);
     result.success = true;
     res.json(result);

@@ -22,4 +22,17 @@ async function addGroup(
   await group.save();
 }
 
-export { addGroup };
+async function addToGroup(
+  joinCode: string,
+  userID: string | mongoose.Types.ObjectId
+) {
+  if (typeof userID === "string") {
+    userID = new mongoose.Types.ObjectId(userID);
+  }
+  await Group.findOneAndUpdate(
+    { joinCode: joinCode },
+    { $push: { members: userID } }
+  );
+}
+
+export { addGroup, addToGroup };

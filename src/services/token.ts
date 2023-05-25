@@ -36,4 +36,38 @@ async function checkOwnerOfToken(token: string, username: string) {
   return result;
 }
 
-export { createToken, checkOwnerOfToken };
+async function getSessionInfo(token: string, username: string) {
+  let result = {
+    success: false,
+    data: {},
+  };
+  const data = await User.findOne({ username: username});
+  // const dataCencored = select(
+  //   "-_id -__v -password -sessionTokens"
+  // );
+
+  const dataCencored = await User.findOne({ username: username}, {password: 0, sessionTokens: 0, _id: 0, __v: 0});
+ 
+  if (!data || !dataCencored) {
+    return result;
+  }
+  // let tokens = ownerObject.sessionTokens;
+  // for (let hashedToken of tokens) {
+  //   if (await bcrypt.compare(token, hashedToken)) {
+  //     result.success = true;
+  //     break;
+  //   }
+  // }
+
+  let tokens = data.sessionTokens;
+  for (let hashedToken of tokens) {
+    if (await bcrypt.compare(token, hashedToken)) {
+      result.success = true;
+      result.data = dataCencored;
+      break;
+    }
+  }
+  return result;
+}
+
+export { createToken, checkOwnerOfToken, getSessionInfo };

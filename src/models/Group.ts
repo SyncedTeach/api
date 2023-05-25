@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 
 interface IGroup {
   name: string;
+  subject: string;
   members: Array<Schema.Types.ObjectId>[];
   owners: Array<Schema.Types.ObjectId>[];
   joinCode: string;
@@ -10,6 +11,7 @@ interface IGroup {
 
 const groupSchema = new Schema<IGroup>({
   name: String,
+  subject: String,
   members: Array<Schema.Types.ObjectId>,
   owners: Array<Schema.Types.ObjectId>,
   joinCode: String,

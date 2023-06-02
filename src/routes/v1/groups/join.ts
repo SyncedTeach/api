@@ -33,7 +33,9 @@ router.post(
     let userID = userObject?._id || "";
     addToGroup(req.params.joinCode, userID);
     // TODO: this
-    res.json({});
+    res.json({
+      success: true,
+    });
   }
 );
 export { router };

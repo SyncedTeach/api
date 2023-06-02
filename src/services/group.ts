@@ -17,7 +17,7 @@ async function addGroup(
     name: name,
     // TODO: consider the use of randomBytes on whether its necessary.
     joinCode: bytes.toString("hex"),
-    private: false,
+    private: false, // Currently private FULLY DISABLES joining by code.
   });
   await group.save();
 }
@@ -29,10 +29,11 @@ async function addToGroup(
   if (typeof userID === "string") {
     userID = new mongoose.Types.ObjectId(userID);
   }
-  await Group.findOneAndUpdate(
-    { joinCode: joinCode },
+  let result = await Group.findOneAndUpdate(
+    { joinCode: joinCode, private: false },
     { $addToSet: { members: userID } }
   );
+  return result ? true : false;
 }
 
 export { addGroup, addToGroup };

@@ -31,10 +31,12 @@ router.post(
     let userObject = await safeFindUserByUsername(cookies.username);
     // we already know username exists because we checked it
     let userID = userObject?._id || "";
-    addToGroup(req.params.joinCode, userID);
+    // this one adds to group
+    // TODO: add checking consistency (???)
+    let joinResult = addToGroup(req.params.joinCode, userID);
     // TODO: this
     res.json({
-      success: true,
+      success: joinResult,
     });
   }
 );

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
 import { User } from "../src/models/User";
-import { mongoServerInstance } from "./universal";
+import { initialize } from "./universal";
+
 const highRankTestUser = new User({
   username: "admin-tester",
   membership: {
@@ -17,6 +17,7 @@ const highRankTestUser = new User({
     "$2b$08$ZkQRUTQhGf5NCmtOEfYVce1si.eyY2ufc0npcV7jveSj9DqR.tG3O",
   ],
 });
+
 const lowRankTestUser = new User({
   username: "normal-tester",
   membership: {
@@ -32,15 +33,28 @@ const lowRankTestUser = new User({
     "$2b$08$W80OpuOJshfLsq7lYDIGqutkut9s3gOBpCNyD45D8arJuz1bQvIZ.",
   ],
 });
-beforeAll(async () => {
-  // start mongo server
+// walk(path.join(__dirname, "..", "src", "routes")).forEach((file: string) => {
+//   let path = file.substring("./routes".length);
+//   path = path.substring(0, path.length - 3);
+//   testApp.use(require(file).router);
+// });
 
-  await mongoose.connect(process.env.MONGODB_TESTING_URI as string);
-  // create test users
-  highRankTestUser.save();
-  lowRankTestUser.save();
-});
+// // ===
+// function walk(dir: string) {
+//   let results: Array<string> = [];
+//   let list = fs.readdirSync(path.join(dir));
+//   list.forEach(function (file) {
+//     let fileToStat = path.join(dir, file);
+//     let stat = fs.statSync(fileToStat);
+//     if (stat && stat.isDirectory()) {
+//       results = results.concat(walk(fileToStat));
+//     } else {
+//       results.push(fileToStat);
+//     }
+//   });
+//   return results;
+// }
 
-afterAll(async () => {
-  await mongoose.disconnect();
-});
+module.exports = async function setup() {
+  await initialize();
+};

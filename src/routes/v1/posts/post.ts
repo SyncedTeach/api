@@ -19,19 +19,19 @@ router.get(
     };
     let id = req.params.id;
     if (!/^[0-9a-f]{24}$/.test(id) || !checkHTML(id) || !checkMongoDB(id)) {
-      res.json(result);
+      res.status(400).json(result);
       return;
     }
     let post = await findPost(req.params.id);
     if (!post) {
-      res.json(result);
+      res.status(404).json(result);
       return;
     }
     let userObject = await safeFindUserByID(result.owner);
     let ownerUsername = userObject?.username || "";
     result.content = post.content;
     result.owner = ownerUsername;
-    res.json(result);
+    res.status(200).json(result);
   }
 );
 export { router };

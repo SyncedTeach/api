@@ -26,22 +26,25 @@ router.post(
       logWrite.info(
         `Accessing data for ${cookies.username} denied: Invalid cookies`
       );
-      res.json(result);
+      res.status(401).json(result);
       return result;
     }
     // get data
-    const sessionInfo = await getSessionInfo(cookies.sessionToken || "", cookies.username || "");
+    const sessionInfo = await getSessionInfo(
+      cookies.sessionToken || "",
+      cookies.username || ""
+    );
     if (!sessionInfo) {
-        logWrite.info(
-            `Accessing data for ${cookies.username} denied: Invalid session token`
-        );
-        res.json(result);
-        return result;
+      logWrite.info(
+        `Accessing data for ${cookies.username} denied: Invalid session token`
+      );
+      res.status(401).json(result);
+      return result;
     }
 
     result.success = true;
     result = sessionInfo;
-    res.json(result);
+    res.status(200).json(result);
     return result;
   }
 );

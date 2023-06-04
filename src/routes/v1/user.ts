@@ -25,7 +25,7 @@ router.post(
       logWrite.info(
         `Accessing data for ${cookies.username} denied: Invalid cookies`
       );
-      res.json(result);
+      res.status(401).json(result);
       return result;
     }
     // get data
@@ -34,7 +34,7 @@ router.post(
       logWrite.info(
         `Accessing data for ${cookies.username} denied: Target not found`
       );
-      res.json(result);
+      res.status(404).json(result);
       return result;
     }
     // check for permission
@@ -45,12 +45,12 @@ router.post(
     );
     if (!(usernameResult || rankResult.success)) {
       logWrite.info(`Accessing data for ${cookies.username} denied: Low rank`);
-      res.json(result);
+      res.status(403).json(result);
       return result;
     }
     result.success = true;
     result.data = data;
-    res.json(result);
+    res.status(200).json(result);
     return result;
   }
 );

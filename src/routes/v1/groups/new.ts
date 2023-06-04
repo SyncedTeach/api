@@ -28,7 +28,7 @@ router.post(
       logWrite.info(
         `Did not create group for ${cookies.username}: Invalid cookies`
       );
-      res.json(result);
+      res.status(401).json(result);
       return result;
     }
     // check if user has permissions
@@ -39,7 +39,7 @@ router.post(
     );
     if (!rankResult.success) {
       logWrite.info(`Did not create group for ${cookies.username}: Low rank`);
-      res.json(result);
+      res.status(403).json(result);
       return result;
     }
     // sanitize/validate data
@@ -47,7 +47,7 @@ router.post(
       logWrite.info(
         `Did not create group for ${cookies.username}: Illegal group`
       );
-      res.json(result);
+      res.status(400).json(result);
       return result;
     }
     let userObject = await safeFindUserByUsername(username);
@@ -56,7 +56,7 @@ router.post(
     addGroup(name, username, userID);
     logWrite.info(`Successfully created new group for ${cookies.username}`);
     result.success = true;
-    res.json(result);
+    res.status(200).json(result);
     return result;
   }
 );

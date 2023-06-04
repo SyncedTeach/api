@@ -25,7 +25,8 @@ router.post(
       logWrite.info(
         `Did not join group for ${cookies.username}: Invalid cookies`
       );
-      res.json(result);
+      // incorrect cookies
+      res.status(401).json(result);
       return result;
     }
     let userObject = await safeFindUserByUsername(cookies.username);
@@ -35,9 +36,11 @@ router.post(
     // TODO: add checking consistency (???)
     let joinResult = addToGroup(req.params.joinCode, userID);
     // TODO: this
-    res.json({
-      success: joinResult,
-    });
+    if (!joinResult) {
+      res.status(403).json({ success: joinResult });
+    }
+    res.status(200).json({ success: joinResult });
+    return result;
   }
 );
 export { router };

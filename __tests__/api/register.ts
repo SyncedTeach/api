@@ -1,7 +1,7 @@
 import { User } from "../../src/models/User";
 import { register } from "../../src/services/authenticate";
 
-describe("Authentication service", () => {
+describe("Registration service", () => {
   it("should be able to add users", async () => {
     const testUser = new User({
       username: "testUser0001A",

@@ -30,7 +30,7 @@ async function addToGroup(
     userID = new mongoose.Types.ObjectId(userID);
   }
   let result = await Group.findOneAndUpdate(
-    { joinCode: joinCode, private: false },
+    { $and: [{ joinCode: joinCode }, { private: false }] },
     { $addToSet: { members: userID } }
   );
   return result ? true : false;

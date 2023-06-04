@@ -37,9 +37,11 @@ router.post(
     let joinResult = addToGroup(req.params.joinCode, userID);
     // TODO: this
     if (!joinResult) {
-      res.status(403).json({ success: joinResult });
+      res.status(403).json(result);
+      return result;
     }
-    res.status(200).json({ success: joinResult });
+    result.success = true;
+    res.status(200).json(result);
     return result;
   }
 );

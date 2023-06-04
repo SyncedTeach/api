@@ -37,8 +37,7 @@
       "create": [
         "administrator",
         "superAdministrator",
-        "teacher",
-        "student"
+        "teacher"
       ]
     }
   }

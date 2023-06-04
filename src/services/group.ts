@@ -17,7 +17,7 @@ async function addGroup(
     name: name,
     // TODO: consider the use of randomBytes on whether its necessary.
     joinCode: bytes.toString("hex"),
-    private: false, // Currently private FULLY DISABLES joining by code.
+    private: false, // Currently private FULLY DISABLES joining.
   });
   await group.save();
 }

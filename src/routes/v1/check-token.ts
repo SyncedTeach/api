@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 var jsonParser = bodyParser.json();
 var router = express.Router();
-router.post(
+router.get(
   "/v1/check-token",
   [jsonParser, cookieParser()],
   async (req: express.Request, res: express.Response) => {

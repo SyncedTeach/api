@@ -46,7 +46,7 @@ const userSchema = new Schema<IUser>({
 userSchema.methods.getTeacherData = async function getTeacherData() {
   let data: { [key: string]: any } = {};
   // groups
-  let groupsOwned = await Group.find({ owner: this._id });
+  let groupsOwned = await Group.find({ owners: this._id });
   let groupsIn = await Group.find({ members: this._id });
   data.groups = {
     owner: groupsOwned,

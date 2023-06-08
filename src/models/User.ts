@@ -1,4 +1,5 @@
-import { Schema, model } from "mongoose";
+import mongoose, { HydratedDocument, Schema, model } from "mongoose";
+import { Group } from "./Group";
 
 interface IUser {
   name: string;
@@ -19,6 +20,7 @@ interface IUser {
   sessionTokensWithExpiryTime: [string];
   sessionTokens: [string];
   apiKey: string;
+  getTeacherData(): object;
 }
 
 const userSchema = new Schema<IUser>({
@@ -41,6 +43,16 @@ const userSchema = new Schema<IUser>({
   sessionTokens: [String],
   apiKey: String,
 });
-
+userSchema.methods.getTeacherData = async function getTeacherData() {
+  let data: { [key: string]: any } = {};
+  // groups
+  let groupsOwned = await Group.find({ owner: this._id });
+  let groupsIn = await Group.find({ members: this._id });
+  data.groups = {
+    owner: groupsOwned,
+    member: groupsIn,
+  };
+  return data;
+};
 const User = model<IUser>("User", userSchema, "users");
 export { User, IUser };

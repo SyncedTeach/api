@@ -9,6 +9,7 @@ async function login(username: string, password: string) {
   let info = {
     token: "",
     message: "",
+    uid: "",
     success: false,
   };
 
@@ -51,6 +52,7 @@ async function login(username: string, password: string) {
   userResult.sessionTokens = currentToken;
   await userResult.save();
   info.token = token;
+  info.uid = userResult._id.toString();
   info.success = true;
   info.message = "User logged in!";
   logWrite.info(`User ${username} logged in.`);

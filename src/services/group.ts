@@ -44,6 +44,7 @@ async function addToGroup(
   if (!group) {
     return result;
   }
+  result.success = true;
   result.groupID = group._id.toString();
   return result;
 }

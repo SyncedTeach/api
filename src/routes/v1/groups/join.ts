@@ -38,14 +38,14 @@ router.post(
     let userID = userObject?._id || "";
     // this one adds to group
     // TODO: add checking consistency (???)
-    let joinResult = addToGroup(req.params.joinCode, userID);
+    let joinResult = await addToGroup(req.params.joinCode, userID);
     // TODO: this
-    if (!joinResult) {
+    if (!joinResult.success) {
       res.status(403).json(result);
       return result;
     }
     result.success = true;
-    result.groupID = (await joinResult).groupID;
+    result.groupID = joinResult.groupID;
     res.status(200).json(result);
     return result;
   }

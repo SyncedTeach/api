@@ -20,9 +20,9 @@ const highRankTestUser = new User({
 const lowRankTestUser = new User({
   username: "normal-tester",
   membership: {
-    isSuperAdministrator: true,
-    isAdministrator: true,
-    isTeacher: true,
+    isSuperAdministrator: false,
+    isAdministrator: false,
+    isTeacher: false,
   },
   // TODO: Is this really the best way to do it? Am I doing something wrong here?
   // "password123" hashed 8 times

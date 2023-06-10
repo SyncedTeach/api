@@ -41,14 +41,17 @@ async function getSessionInfo(token: string, username: string) {
     success: false,
     data: {},
   };
-  const data = await User.findOne({ username: username});
+  const data = await User.findOne({ username: username });
   // const dataCencored = select(
   //   "-_id -__v -password -sessionTokens"
   // );
 
-  const dataCencored = await User.findOne({ username: username}, {password: 0, sessionTokens: 0, _id: 0, __v: 0});
- 
-  if (!data || !dataCencored) {
+  const dataCensored = await User.findOne(
+    { username: username },
+    { password: 0, sessionTokens: 0, _id: 0, __v: 0 }
+  );
+
+  if (!data || !dataCensored) {
     return result;
   }
   // let tokens = ownerObject.sessionTokens;
@@ -63,7 +66,7 @@ async function getSessionInfo(token: string, username: string) {
   for (let hashedToken of tokens) {
     if (await bcrypt.compare(token, hashedToken)) {
       result.success = true;
-      result.data = dataCencored;
+      result.data = dataCensored;
       break;
     }
   }

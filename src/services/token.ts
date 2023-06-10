@@ -3,13 +3,14 @@ import { checkHTML, checkMongoDB } from "../utilities/sanitize";
 import { User, IUser } from "../models/User";
 import bcrypt from "bcrypt";
 import { logWrite } from "../utilities/log";
+import mongoose from "mongoose";
 async function createToken(size: number, encoding?: "hex" | "utf8") {
   let buffer = crypto.randomBytes(size);
   return buffer.toString(encoding || "hex");
 }
 
 async function checkOwnerOfToken(token: string, username: string) {
-  let result = {
+  let result: { [key: string]: any } = {
     username: username,
     success: false,
   };
@@ -27,6 +28,7 @@ async function checkOwnerOfToken(token: string, username: string) {
   let tokens = ownerObject.sessionTokens;
   for (let hashedToken of tokens) {
     if (await bcrypt.compare(token, hashedToken)) {
+      result.userID = owner._id.toString();
       result.success = true;
       break;
     }
@@ -42,9 +44,6 @@ async function getSessionInfo(token: string, username: string) {
     data: {},
   };
   const data = await User.findOne({ username: username });
-  // const dataCencored = select(
-  //   "-_id -__v -password -sessionTokens"
-  // );
 
   const dataCensored = await User.findOne(
     { username: username },

@@ -22,7 +22,7 @@ router.get(
       res.status(400).json(result);
       return;
     }
-    let post = await findPost(req.params.id);
+    let post = await findPost(id);
     if (!post) {
       res.status(404).json(result);
       return;

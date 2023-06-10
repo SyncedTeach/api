@@ -15,6 +15,7 @@ router.get(
       success: false,
       data: {},
     };
+    let id = req.params.id;
     // check if user is real
     let cookies = req.cookies;
     let cookieResult = await checkOwnerOfToken(
@@ -29,7 +30,7 @@ router.get(
       return result;
     }
     // get data
-    let data = await safeFindUserByID(req.params.id);
+    let data = await safeFindUserByID(id);
     if (!data) {
       logWrite.info(
         `Accessing data for ${cookies.username} denied: Target not found`

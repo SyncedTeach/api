@@ -16,6 +16,7 @@ router.get(
       success: false,
       data: {},
     };
+    let id = req.params.id;
     // check if user is real
     let cookies = req.cookies;
     let cookieResult = await checkOwnerOfToken(
@@ -31,7 +32,7 @@ router.get(
     }
 
     // get data
-    let data = await safeFindUserByID(req.params.id);
+    let data = await safeFindUserByID(id);
     if (!data) {
       logWrite.info(
         `Accessing data for ${cookies.username} denied: Target not found`
@@ -59,7 +60,7 @@ router.get(
       return result;
     }
     // get data according to context
-    let fullUser = await User.findById(req.params.id);
+    let fullUser = await User.findById(id);
     let teacherData = (await fullUser?.getTeacherData()) || {};
     result.success = true;
     result.data = teacherData;

@@ -1,5 +1,5 @@
 import mongoose, { HydratedDocument, Schema, model } from "mongoose";
-import { Group } from "./Group";
+import { Group, IGroup } from "./Group";
 
 interface IUser {
   name: string;
@@ -44,13 +44,21 @@ const userSchema = new Schema<IUser>({
   apiKey: String,
 });
 userSchema.methods.getTeacherData = async function getTeacherData() {
+  function formatGroup(groupData: IGroup) {
+    return {
+      name: groupData.name,
+      members: groupData.members.length,
+      owners: groupData.owners,
+    };
+  }
+
   let data: { [key: string]: any } = {};
   // groups
   let groupsOwned = await Group.find({ owners: this._id });
   let groupsIn = await Group.find({ members: this._id });
   data.groups = {
-    owner: groupsOwned,
-    member: groupsIn,
+    owner: groupsOwned.map(formatGroup),
+    member: groupsIn.map(formatGroup),
   };
   return data;
 };

@@ -14,7 +14,7 @@ router.post(
   "/v1/groups/new",
   [jsonParser, cookieParser()],
   async (req: express.Request, res: express.Response) => {
-    let name = req.body["group-name"];
+    let name = req.body["gname"];
     let result = {
       success: false,
     };
@@ -45,7 +45,7 @@ router.post(
     // sanitize/validate data
     if (!checkHTML(name) || !checkMongoDB(name)) {
       logWrite.info(
-        `Did not create group for ${cookies.username}: Illegal group`
+        `Did not create group for ${cookies.username}: Illegal group name "${name}"`
       );
       res.status(400).json(result);
       return result;

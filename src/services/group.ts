@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 import { Group, IGroup } from "../models/Group";
 import { randomBytes } from "crypto";
 // TODO: add title
+interface GroupJoinResult {
+  success: boolean;
+  groupID?: string | undefined;
+}
+
 async function addGroup(
   name: string,
   username: string,
@@ -29,11 +34,18 @@ async function addToGroup(
   if (typeof userID === "string") {
     userID = new mongoose.Types.ObjectId(userID);
   }
-  let result = await Group.findOneAndUpdate(
+  let result: GroupJoinResult = {
+    success: false,
+  };
+  let group = await Group.findOneAndUpdate(
     { $and: [{ joinCode: joinCode }, { private: false }] },
     { $addToSet: { members: userID } }
   );
-  return result ? true : false;
+  if (!group) {
+    return result;
+  }
+  result.groupID = group._id.toString();
+  return result;
 }
 
 export { addGroup, addToGroup };

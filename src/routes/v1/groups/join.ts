@@ -7,12 +7,16 @@ import { addGroup, addToGroup } from "../../../services/group";
 import { logWrite } from "../../../utilities/log";
 var jsonParser = bodyParser.json();
 var router = express.Router();
+interface GroupJoinResult {
+  success: boolean;
+  groupID?: string | undefined;
+}
 // TODO: add more conditions
 router.post(
   "/v1/groups/join/:joinCode",
   [jsonParser, cookieParser()],
   async (req: express.Request, res: express.Response) => {
-    let result = {
+    let result: GroupJoinResult = {
       success: false,
     };
     // check if user is real
@@ -41,6 +45,7 @@ router.post(
       return result;
     }
     result.success = true;
+    result.groupID = (await joinResult).groupID;
     res.status(200).json(result);
     return result;
   }

@@ -15,7 +15,7 @@ async function addGroup(
   if (typeof userID === "string") {
     userID = new mongoose.Types.ObjectId(userID);
   }
-  let bytes = await randomBytes(16);
+  let bytes = randomBytes(16);
   let group = new Group({
     owners: [userID],
     members: [userID],
@@ -25,6 +25,7 @@ async function addGroup(
     private: false, // Currently private FULLY DISABLES joining.
   });
   await group.save();
+  return group._id.toString();
 }
 
 async function addToGroup(

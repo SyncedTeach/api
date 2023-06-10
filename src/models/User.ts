@@ -55,12 +55,38 @@ userSchema.methods.getTeacherData = async function getTeacherData() {
 
   let data: { [key: string]: any } = {};
   // groups
-  let groupsOwned = await Group.find({ owners: this._id });
+  // let groupsOwned = await Group.find({ owners: this._id });
   let groupsIn = await Group.find({ members: this._id });
-  data.groups = {
-    owner: groupsOwned.map(formatGroup),
-    member: groupsIn.map(formatGroup),
-  };
+  data.groups = [
+        //interface ClassR {
+//   name: string;
+//   id: string;
+//   size: string;
+//   owner: string;
+//   owned: boolean;
+// }
+    // ...groupsOwned.map((group) => {
+    //   return {
+    //     name: group.name,
+    //     id: group._id,
+    //     size: group.members.length,
+    //     owner: group.owners,
+    //     owned: true,
+    //   };
+    // }),
+    ...groupsIn.map((group) => {
+      return {
+        name: group.name,
+        id: group._id,
+        size: group.members.length,
+        owner: group.owners,
+        owned: group.owners.includes(this._id),
+      };
+    }),
+
+  ]
+
+
   return data;
 };
 userSchema.methods.saveAPIKey = async function saveAPIKey(key: string) {

@@ -18,6 +18,7 @@ router.post(
     let name = req.body["name"];
     let result = {
       success: false,
+      id: "",
     };
     // check if user has permissions
     let username = req.cookies.username;
@@ -43,9 +44,10 @@ router.post(
     let userObject = await safeFindUserByUsername(username);
     // we already know username exists because we checked it
     let userID = userObject?._id || "";
-    addGroup(name, username, userID);
+    let newGroup = await addGroup(name, username, userID);
     logWrite.info(`Successfully created new group for ${req.cookies.username}`);
     result.success = true;
+    result.id = newGroup;
     res.status(200).json(result);
     return result;
   }

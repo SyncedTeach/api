@@ -29,6 +29,10 @@ router.get(
       res.status(401).json(result);
       return result;
     }
+    // check if self is given
+    if (req.params.id === "self") {
+      id = cookieResult.userID as string;
+    }
     // get data
     let data = await safeFindUserByID(id);
     if (!data) {

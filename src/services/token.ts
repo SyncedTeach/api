@@ -4,13 +4,20 @@ import { User, IUser } from "../models/User";
 import bcrypt from "bcrypt";
 import { logWrite } from "../utilities/log";
 import mongoose from "mongoose";
+
+interface ValidationResult {
+  username: string;
+  success: boolean;
+  userID?: string;
+}
+
 async function createToken(size: number, encoding?: "hex" | "utf8") {
   let buffer = crypto.randomBytes(size);
   return buffer.toString(encoding || "hex");
 }
 
 async function checkOwnerOfToken(token: string, username: string) {
-  let result: { [key: string]: any } = {
+  let result: ValidationResult = {
     username: username,
     success: false,
   };

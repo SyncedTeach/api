@@ -20,6 +20,7 @@ interface IUser {
   sessionTokensWithExpiryTime: [string];
   sessionTokens: [string];
   apiKey: string;
+  saveAPIKey(key: string): void;
   getTeacherData(): object;
 }
 
@@ -61,6 +62,10 @@ userSchema.methods.getTeacherData = async function getTeacherData() {
     member: groupsIn.map(formatGroup),
   };
   return data;
+};
+userSchema.methods.saveAPIKey = async function saveAPIKey(key: string) {
+  this.apiKey = key;
+  this.save();
 };
 const User = model<IUser>("User", userSchema, "users");
 export { User, IUser };

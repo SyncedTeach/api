@@ -45,6 +45,7 @@ async function checkOwnerOfToken(token: string, username: string) {
   return result;
 }
 
+// FIXME: Consider sanitizing tokens.
 async function getSessionInfo(token: string, username: string) {
   let result = {
     success: false,

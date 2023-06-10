@@ -4,13 +4,14 @@ import cookieParser from "cookie-parser";
 import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
 import { addPost, findPost } from "../../../services/post";
 import { safeFindUserByID } from "../../../services/authorize";
+import { sessionTokenChecker } from "../../../middlewares/authorization";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 // TODO: add logging
 // TODO: add reasons why post failed
 router.get(
   "/v1/posts/post/:id",
-  [jsonParser, cookieParser()],
+  [jsonParser, cookieParser(), sessionTokenChecker],
   async (req: express.Request, res: express.Response) => {
     let result = {
       success: false,

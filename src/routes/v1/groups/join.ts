@@ -7,6 +7,7 @@ import { addGroup, addToGroup } from "../../../services/group";
 import { logWrite } from "../../../utilities/log";
 var jsonParser = bodyParser.json();
 var router = express.Router();
+import { sessionTokenChecker } from "../../../middlewares/authorization";
 interface GroupJoinResult {
   success: boolean;
   groupID?: string | undefined;
@@ -14,26 +15,15 @@ interface GroupJoinResult {
 // TODO: add more conditions
 router.post(
   "/v1/groups/join/:joinCode",
-  [jsonParser, cookieParser()],
+  [jsonParser, cookieParser(), sessionTokenChecker],
   async (req: express.Request, res: express.Response) => {
     let result: GroupJoinResult = {
       success: false,
     };
-    // check if user is real
+
     let cookies = req.cookies;
-    let cookieResult = await checkOwnerOfToken(
-      cookies.sessionToken || "",
-      cookies.username || ""
-    );
-    if (!cookieResult.success) {
-      logWrite.info(
-        `Did not join group for ${cookies.username}: Invalid cookies`
-      );
-      // incorrect cookies
-      res.status(401).json(result);
-      return result;
-    }
-    let userObject = await safeFindUserByUsername(cookies.username);
+
+    let userObject = await safeFindUserByUsername(req.cookies.username);
     // we already know username exists because we checked it
     let userID = userObject?._id || "";
     // this one adds to group

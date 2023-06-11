@@ -59,7 +59,6 @@ userSchema.methods.getTeacherData = async function getTeacherData() {
   // groups
   // let groupsOwned = await Group.find({ owners: this._id });
   let groupsIn = await Group.find({ members: this._id });
-<<<<<<< HEAD
   data.groups = [];
   for (let group of groupsIn) {
     let postsMade = await Post.find({
@@ -105,26 +104,6 @@ userSchema.methods.getStudentData = async function getStudentData() {
       postsMade: postsMade,
     });
   }
-=======
-  data.groups = await Promise.all(groupsIn.map(async (group) => {
-    // console.log('group:', group);
-    const ownerPromises = group.owners.map((owner) => User.findOne({ _id: owner }));
-    // console.log('ownerPromises:', ownerPromises);
-    const ownerResults = await Promise.all(ownerPromises);
-    // console.log('ownerResults:', ownerResults);
-    const ownerFormat = ownerResults.map((user) => user?.username).join(", ");
-    // console.log('ownerFormat:', ownerFormat);
-  
-    return {
-      name: group.name,
-      id: group._id,
-      size: group.members.length,
-      owner: ownerFormat,
-      owned: group.owners.includes(this._id),
-    };
-  }));
-  
->>>>>>> 05594467e7a1686102632d15d01e5cb77e02024f
 
   return data;
 };

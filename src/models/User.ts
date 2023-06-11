@@ -59,20 +59,31 @@ userSchema.methods.getTeacherData = async function getTeacherData() {
   // groups
   // let groupsOwned = await Group.find({ owners: this._id });
   let groupsIn = await Group.find({ members: this._id });
-  data.groups = [];
-  for (let group of groupsIn) {
-    let postsMade = await Post.find({
-      $and: [{ owner: this._id }, { group: group._id }],
-    });
-    data.groups.push({
-      name: group.name,
-      id: group._id,
-      size: group.members.length,
-      owner: group.owners,
-      owned: group.owners.includes(this._id),
-      postsMade: postsMade,
-    });
-  }
+  data.groups = await Promise.all(
+    groupsIn.map(async (group) => {
+      let postsMade = await Post.find({
+        $and: [{ owner: this._id }, { group: group._id }],
+      });
+      // console.log('group:', group);
+      const ownerPromises = group.owners.map((owner) =>
+        User.findOne({ _id: owner })
+      );
+      // console.log('ownerPromises:', ownerPromises);
+      const ownerResults = await Promise.all(ownerPromises);
+      // console.log('ownerResults:', ownerResults);
+      const ownerFormat = ownerResults.map((user) => user?.username).join(", ");
+      // console.log('ownerFormat:', ownerFormat);
+
+      return {
+        name: group.name,
+        id: group._id,
+        size: group.members.length,
+        owner: ownerFormat,
+        owned: group.owners.includes(this._id),
+        postsMade: postsMade,
+      };
+    })
+  );
 
   return data;
 };
@@ -90,20 +101,32 @@ userSchema.methods.getStudentData = async function getStudentData() {
   // groups
   // let groupsOwned = await Group.find({ owners: this._id });
   let groupsIn = await Group.find({ members: this._id });
-  data.groups = [];
-  for (let group of groupsIn) {
-    let postsMade = await Post.find({
-      $and: [{ owner: this._id }, { group: group._id }],
-    });
-    data.groups.push({
-      name: group.name,
-      id: group._id,
-      size: group.members.length,
-      owner: group.owners,
-      owned: group.owners.includes(this._id),
-      postsMade: postsMade,
-    });
-  }
+
+  data.groups = await Promise.all(
+    groupsIn.map(async (group) => {
+      let postsMade = await Post.find({
+        $and: [{ owner: this._id }, { group: group._id }],
+      });
+      // console.log('group:', group);
+      const ownerPromises = group.owners.map((owner) =>
+        User.findOne({ _id: owner })
+      );
+      // console.log('ownerPromises:', ownerPromises);
+      const ownerResults = await Promise.all(ownerPromises);
+      // console.log('ownerResults:', ownerResults);
+      const ownerFormat = ownerResults.map((user) => user?.username).join(", ");
+      // console.log('ownerFormat:', ownerFormat);
+
+      return {
+        name: group.name,
+        id: group._id,
+        size: group.members.length,
+        owner: ownerFormat,
+        owned: group.owners.includes(this._id),
+        postsMade: postsMade,
+      };
+    })
+  );
 
   return data;
 };

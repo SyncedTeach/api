@@ -127,4 +127,51 @@ router.get(
     res.status(200).json(result);
   }
 );
+
+router.get(
+  "/v1/posts/self",
+  [jsonParser, cookieParser(), sessionTokenChecker],
+  async (req: express.Request, res: express.Response) => {
+    async function formatPost(post: any) {
+      let owner = await safeFindUserByID(post.owner);
+      let ownerUsername = owner?.username || "";
+      return {
+        id: post._id,
+        owner: ownerUsername,
+        dateTime: post.dateTime,
+        lastEditDateTime: post.lastEditDateTime,
+        group: post.group,
+        ownerUsername: ownerUsername,
+        content: post.content,
+      };
+    }
+
+    let result: { [key: string]: any } = {
+      success: false,
+      posts: [],
+    };
+    let id = req.params.id;
+    let queryOwner = await safeFindUserByUsername(req.cookies.username);
+    if (!queryOwner) {
+      logWrite.info(
+        `Did not carry out action for ${req.cookies.username}: User not found`
+      );
+      // incorrect cookies
+      res.status(401).json(result);
+      return result;
+    }
+    let queryOwnerID = queryOwner._id;
+    let queryOwnerGroups = await Group.find({ members: queryOwnerID });
+    let queryOwnerGroupIDs = queryOwnerGroups.map((element) => element._id);
+
+    for (let groupID of queryOwnerGroupIDs) {
+      let groupPosts = await Post.find({ group: groupID });
+      let formattedGroupPosts = await Promise.all(groupPosts.map(formatPost));
+      result.posts = result.posts.concat(formattedGroupPosts);
+    }
+
+    result.success = true;
+    res.status(200).json(result);
+  }
+);
 export { router };

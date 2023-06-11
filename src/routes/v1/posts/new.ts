@@ -43,51 +43,61 @@ router.post(
       success: false,
     };
     if (!/^[0-9a-f]{24}$/.test(targetGroupID) || !checkMongoDB(targetGroupID)) {
-      logWrite.info(`Did not create post for ${req.cookies.username}: Invalid group id`);
+      logWrite.info(
+        `Did not create post for ${req.cookies.username}: Invalid group id`
+      );
       res.status(400).json(result);
       return;
     }
     let type = req.body["type"];
     let data = req.body["data"];
 
-    if(!(type == "announcement" || type == "assignment" || type == "exam")){
-      logWrite.info(`Did not create post for ${req.cookies.username}: Invalid type`);
-      return res.status(400).json({result});
+    if (!(type == "announcement" || type == "assignment" || type == "exam")) {
+      logWrite.info(
+        `Did not create post for ${req.cookies.username}: Invalid type`
+      );
+      return res.status(400).json(result);
     }
 
-    if(type == "announcement"){
+    if (type == "announcement") {
       let title = data["title"];
       let description = data["description"];
-      if(!title || !description){
-        logWrite.info(`Did not create post for ${req.cookies.username}: Invalid data`);
-        return res.status(400).json({result});
+      if (!title || !description) {
+        logWrite.info(
+          `Did not create post for ${req.cookies.username}: Invalid data`
+        );
+        return res.status(400).json(result);
       }
     }
 
-    if(type == "assignment"){
+    if (type == "assignment") {
       let dueDate = data["dueDate"];
       let maxScore = data["maxScore"];
       let score = data["score"];
       let title = data["title"];
       let description = data["description"];
-      if(!dueDate || !maxScore || !score || !title || !description){
-        logWrite.info(`Did not create post for ${req.cookies.username}: Invalid data`);
-        return res.status(400).json({result});
+      if (!dueDate || !maxScore || !score || !title || !description) {
+        logWrite.info(
+          `Did not create post for ${req.cookies.username}: Invalid data`
+        );
+        return res.status(400).json(result);
       }
     }
 
-    if(type == "exam"){
+    if (type == "exam") {
       let dueDate = data["dueDate"];
       let maxScore = data["maxScore"];
       let score = data["score"];
       let title = data["title"];
       let description = data["description"];
-      if(!dueDate || !maxScore || !score || !title || !description){
-        logWrite.info(`Did not create post for ${req.cookies.username}: Invalid data`);
-        return res.status(400).json({result});
+      if (!dueDate || !maxScore || !score || !title || !description) {
+        logWrite.info(
+          `Did not create post for ${req.cookies.username}: Invalid data`
+        );
+        return res.status(400).json(result);
       }
     }
-    
+
     // check if user has permissions
     let username = req.cookies.username;
     let rankResult = await checkRank(

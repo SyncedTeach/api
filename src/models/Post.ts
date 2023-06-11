@@ -7,6 +7,7 @@ interface IPost {
   dateTime: Date;
   lastEditDateTime: Date;
   location: string;
+  group: Schema.Types.ObjectId;
   // data
   content: string;
 }
@@ -18,6 +19,7 @@ const postSchema = new Schema<IPost>({
   location: Schema.Types.ObjectId,
   lastEditDateTime: Date,
   content: String,
+  group: Schema.Types.ObjectId,
 });
 
 const Post = model<IPost>("Post", postSchema, "posts");

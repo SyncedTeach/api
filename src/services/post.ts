@@ -16,7 +16,7 @@ async function addPost(
     content: content,
     dateTime: dateTime,
     lastEditDateTime: dateTime,
-    targetGroupID: targetGroupID,
+    group: targetGroupID,
   });
   await post.save();
 }

@@ -20,6 +20,10 @@ router.post(
     let result = {
       success: false,
     };
+    if (!/^[0-9a-f]{24}$/.test(targetGroupID) || !checkMongoDB(targetGroupID)) {
+      res.status(400).json(result);
+      return;
+    }
     // check if user has permissions
     let username = req.cookies.username;
     let rankResult = await checkRank(

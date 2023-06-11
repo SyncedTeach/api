@@ -7,9 +7,12 @@ interface IPost {
   dateTime: Date;
   lastEditDateTime: Date;
   location: string;
+  // type of post (announcement, assignment, exam, etc.)
   group: Schema.Types.ObjectId;
   // data
   content: string;
+  data: any;
+  type: string;
 }
 
 const postSchema = new Schema<IPost>({
@@ -18,8 +21,10 @@ const postSchema = new Schema<IPost>({
   dateTime: Date,
   location: Schema.Types.ObjectId,
   lastEditDateTime: Date,
+  type: String,
   content: String,
   group: Schema.Types.ObjectId,
+  data: Object
 });
 
 const Post = model<IPost>("Post", postSchema, "posts");

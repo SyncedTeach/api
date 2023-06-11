@@ -23,7 +23,8 @@ router.get(
   async (req: express.Request, res: express.Response) => {
     let result = {
       success: false,
-      content: "",
+      data: {} as any,
+      type: "",
       owner: "",
     };
     let id = req.params.id;
@@ -64,7 +65,8 @@ router.get(
     let owner = await safeFindUserByID(result.owner);
     let ownerUsername = owner?.username || "";
     result.success = true;
-    result.content = post.content;
+    result.type = post.type;
+    result.data = post.data;
     result.owner = ownerUsername;
     res.status(200).json(result);
   }

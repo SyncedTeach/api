@@ -10,6 +10,7 @@ var router = express.Router();
 import { sessionTokenChecker } from "../../../middlewares/authorization";
 import { Group } from "../../../models/Group";
 import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
+import { addUsernames } from "../../../utilities/add-usernames";
 interface GroupJoinResult {
   success: boolean;
   groupID?: string | undefined;
@@ -43,6 +44,8 @@ router.get(
     }
     result.success = true;
     result.data = group;
+    addUsernames(result.data, "members", "memberUsernames");
+    addUsernames(result.data, "owners", "ownerUsernames");
     res.status(200).json(result);
     return result;
   }

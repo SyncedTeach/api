@@ -32,7 +32,7 @@ router.get(
       res.status(400).json(result);
       return result;
     }
-    let group = await Group.findOne({ _id: id });
+    let group = await Group.findOne({ _id: id }).lean();
     if (!group) {
       logWrite.info(`Group ${group} not found.`);
       return result;
@@ -44,8 +44,10 @@ router.get(
     }
     result.success = true;
     result.data = group;
-    addUsernames(result.data, "members", "memberUsernames");
-    addUsernames(result.data, "owners", "ownerUsernames");
+
+    await addUsernames(result.data, "members", "memberUsernames");
+    await addUsernames(result.data, "owners", "ownerUsernames");
+
     res.status(200).json(result);
     return result;
   }

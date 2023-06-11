@@ -18,7 +18,7 @@ const sessionTokenChecker = async function (
   );
   if (!cookieResult.success) {
     logWrite.info(
-      `Did not join group for ${cookies.username}: Invalid cookies`
+      `Did not carry out action for ${cookies.username}: Invalid cookies`
     );
     // incorrect cookies
     response.status(401).json(result);

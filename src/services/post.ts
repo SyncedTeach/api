@@ -4,7 +4,8 @@ import { Post, IPost } from "../models/Post";
 async function addPost(
   content: string,
   username: string,
-  userID: string | mongoose.Types.ObjectId
+  userID: string | mongoose.Types.ObjectId,
+  targetGroupID: string | mongoose.Types.ObjectId
 ) {
   let dateTime = Date.now();
   if (typeof userID === "string") {
@@ -15,6 +16,7 @@ async function addPost(
     content: content,
     dateTime: dateTime,
     lastEditDateTime: dateTime,
+    targetGroupID: targetGroupID,
   });
   await post.save();
 }

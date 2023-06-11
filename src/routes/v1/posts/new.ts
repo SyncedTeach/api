@@ -16,6 +16,7 @@ router.post(
   [jsonParser, cookieParser(), sessionTokenChecker],
   async (req: express.Request, res: express.Response) => {
     let content = req.body["post-content"];
+    let targetGroupID = req.body["target-group"];
     let result = {
       success: false,
     };
@@ -43,7 +44,7 @@ router.post(
     let userObject = await safeFindUserByUsername(username);
     // we already know username exists because we checked it
     let userID = userObject?._id || "";
-    addPost(content, username, userID);
+    addPost(content, username, userID, targetGroupID);
     logWrite.info(`Successfully created new post for ${req.cookies.username}`);
     result.success = true;
     res.status(200).json(result);

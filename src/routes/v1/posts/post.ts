@@ -12,6 +12,7 @@ import { Group } from "../../../models/Group";
 import { User } from "../../../models/User";
 import { logWrite } from "../../../utilities/log";
 import { IPost, Post } from "../../../models/Post";
+import { getTypeParameterOwner } from "typescript";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 // TODO: add logging
@@ -73,6 +74,20 @@ router.get(
   "/v1/posts/group/:id",
   [jsonParser, cookieParser(), sessionTokenChecker],
   async (req: express.Request, res: express.Response) => {
+    async function formatPost(post: any) {
+      let owner = await safeFindUserByID(post.owner);
+      let ownerUsername = owner?.username || "";
+      return {
+        id: post._id,
+        owner: ownerUsername,
+        dateTime: post.dateTime,
+        lastEditDateTime: post.lastEditDateTime,
+        group: post.group,
+        ownerUsername: ownerUsername,
+        content: post.content,
+      };
+    }
+
     let result: { [key: string]: any } = {
       success: false,
     };
@@ -106,8 +121,9 @@ router.get(
     let groupPosts = (await Post.find({ group: id })).filter(
       (post) => post.group.toString() === req.params.id
     );
+    let formattedGroupPosts = await Promise.all(groupPosts.map(formatPost));
     result.success = true;
-    result.posts = groupPosts;
+    result.posts = formattedGroupPosts;
     res.status(200).json(result);
   }
 );

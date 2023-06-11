@@ -9,7 +9,7 @@ import { sessionTokenChecker } from "../../../middlewares/authorization";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 router.get(
-  "/v1/user/:id/teacher-data",
+  "/v1/user/:id/teacher",
   [jsonParser, cookieParser(), sessionTokenChecker, sessionTokenChecker],
   async (req: express.Request, res: express.Response) => {
     let result = {

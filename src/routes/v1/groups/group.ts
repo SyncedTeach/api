@@ -1,6 +1,10 @@
 import express from "express";
 import { checkOwnerOfToken } from "../../../services/token";
-import { checkRank, safeFindUserByUsername } from "../../../services/authorize";
+import {
+  checkRank,
+  safeFindUserByID,
+  safeFindUserByUsername,
+} from "../../../services/authorize";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { addGroup, addToGroup } from "../../../services/group";
@@ -11,6 +15,7 @@ import { sessionTokenChecker } from "../../../middlewares/authorization";
 import { Group } from "../../../models/Group";
 import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
 import { addUsernames } from "../../../utilities/add-usernames";
+import mongoose, { Types } from "mongoose";
 interface GroupJoinResult {
   success: boolean;
   groupID?: string | undefined;
@@ -20,6 +25,19 @@ router.get(
   "/v1/groups/:id",
   [jsonParser, cookieParser(), sessionTokenChecker],
   async (req: express.Request, res: express.Response) => {
+    async function getUsername(ids: Array<string>) {
+      let elements = [];
+
+      for (let id of ids) {
+        let data = await safeFindUserByID(id);
+        elements.push({
+          username: data?.username,
+          id: id,
+        });
+      }
+      return elements;
+    }
+
     let result: { [key: string]: any } = {
       success: false,
     };
@@ -32,21 +50,30 @@ router.get(
       res.status(400).json(result);
       return result;
     }
-    let group = await Group.findOne({ _id: id }).lean();
+    // TODO: temporary workaround
+    let group: { [key: string]: any } | null = await Group.findOne({
+      _id: id,
+    }).lean();
     if (!group) {
       logWrite.info(`Group ${group} not found.`);
       return result;
     }
-    let groupMembers = group.members.map((element) => element.toString());
+    let groupMembers = group.members.map((element: string) =>
+      element.toString()
+    );
     if (groupMembers.indexOf(userID.toString()) === -1) {
       logWrite.info(`Action denied due to not being in group.`);
       return result;
     }
     result.success = true;
-    result.data = group;
-
-    await addUsernames(result.data, "members", "memberUsernames");
-    await addUsernames(result.data, "owners", "ownerUsernames");
+    // format usernames
+    let formattedMembers = await getUsername(group.members);
+    let formattedOwners = await getUsername(group.owners);
+    group.members = formattedMembers;
+    group.owners = formattedOwners;
+    result.group = group;
+    // await addUsernames(result.data, "members", "memberUsernames");
+    // await addUsernames(result.data, "owners", "ownerUsernames");
 
     res.status(200).json(result);
     return result;

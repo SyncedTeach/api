@@ -63,7 +63,7 @@ userSchema.methods.getTeacherData = async function getTeacherData() {
     groupsIn.map(async (group) => {
       let postsMade = await Post.find({
         $and: [{ owner: this._id }, { group: group._id }],
-      });
+      }).lean();
       // console.log('group:', group);
       const ownerPromises = group.owners.map((owner) =>
         User.findOne({ _id: owner })
@@ -106,7 +106,7 @@ userSchema.methods.getStudentData = async function getStudentData() {
     groupsIn.map(async (group) => {
       let postsMade = await Post.find({
         $and: [{ owner: this._id }, { group: group._id }],
-      });
+      }).lean();
       // console.log('group:', group);
       const ownerPromises = group.owners.map((owner) =>
         User.findOne({ _id: owner })

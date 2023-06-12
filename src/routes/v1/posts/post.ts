@@ -11,7 +11,7 @@ import { sessionTokenChecker } from "../../../middlewares/authorization";
 import { Group } from "../../../models/Group";
 import { User } from "../../../models/User";
 import { logWrite } from "../../../utilities/log";
-import { Post } from "../../../models/Post";
+import { IPost, Post } from "../../../models/Post";
 import { getTypeParameterOwner } from "typescript";
 var jsonParser = bodyParser.json();
 var router = express.Router();
@@ -77,18 +77,15 @@ router.get(
   "/v1/posts/group/:id",
   [jsonParser, cookieParser(), sessionTokenChecker],
   async (req: express.Request, res: express.Response) => {
-    async function formatPost(post: any) {
-      let owner = await safeFindUserByID(post.owner);
+    async function formatPost(post: IPost) {
+      let owner = await safeFindUserByID(post.owner.toString());
       let ownerUsername = owner?.username || "";
-      return {
-        id: post._id,
-        owner: ownerUsername,
-        dateTime: post.dateTime,
-        lastEditDateTime: post.lastEditDateTime,
-        group: post.group,
-        ownerUsername: ownerUsername,
-        content: post.content,
+      // TODO: Funny hack lol
+      let toReturn = {
+        post: post as any,
       };
+      toReturn.post.ownerUsername = ownerUsername;
+      return toReturn.post;
     }
 
     let result: { [key: string]: any } = {

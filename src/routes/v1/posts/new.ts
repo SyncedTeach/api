@@ -43,7 +43,7 @@ router.post(
       let description = data["description"];
       if (!title || !description) {
         logWrite.info(
-          `Did not create post for ${req.cookies.username}: Invalid data`
+          `Did not create post for ${req.cookies.username}: Invalid data for announcement`
         );
         return res.status(400).json(result);
       }
@@ -52,10 +52,10 @@ router.post(
     if (type == "assignment") {
       let dueDate = data["dueDate"];
       let maxScore = data["maxScore"];
-      let score = data["score"];
+      let score = "?"
       let title = data["title"];
       let description = data["description"];
-      if (!dueDate || !maxScore || !score || !title || !description) {
+      if (!dueDate || !maxScore || !title || !description) {
         logWrite.info(
           `Did not create post for ${req.cookies.username}: Invalid data`
         );
@@ -66,10 +66,10 @@ router.post(
     if (type == "exam") {
       let dueDate = data["dueDate"];
       let maxScore = data["maxScore"];
-      let score = data["score"];
+      let score = "?"
       let title = data["title"];
       let description = data["description"];
-      if (!dueDate || !maxScore || !score || !title || !description) {
+      if (!dueDate || !maxScore || !title || !description) {
         logWrite.info(
           `Did not create post for ${req.cookies.username}: Invalid data`
         );

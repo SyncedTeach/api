@@ -15,7 +15,7 @@ interface IPost {
   type: string;
   dueDate: Date;
   maxScore: number;
-  score: number;
+  scores: object;
   description: string;
   // TODO: funny hack lol
   ownerUsername?: string;
@@ -33,7 +33,7 @@ const postSchema = new Schema<IPost>({
   data: Object,
   dueDate: Date,
   maxScore: Number,
-  score: Number,
+  scores: Object,
   description: String,
   // TODO: funny hack lol
   ownerUsername: String,

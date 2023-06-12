@@ -26,6 +26,7 @@ router.get(
       data: {} as any,
       type: "",
       owner: "",
+      post: {} as any,
     };
     let id = req.params.id;
     if (!/^[0-9a-f]{24}$/.test(id) || !checkHTML(id) || !checkMongoDB(id)) {
@@ -66,9 +67,7 @@ router.get(
     let owner = await safeFindUserByID(result.owner);
     let ownerUsername = owner?.username || "";
     result.success = true;
-    result.type = post.type;
-    result.data = post.data;
-    result.owner = ownerUsername;
+    result.post = await formatPost(post);
     res.status(200).json(result);
   }
 );
@@ -77,16 +76,6 @@ router.get(
   "/v1/posts/group/:id",
   [jsonParser, cookieParser(), sessionTokenChecker],
   async (req: express.Request, res: express.Response) => {
-    async function formatPost(post: IPost) {
-      let owner = await safeFindUserByID(post.owner.toString());
-      let ownerUsername = owner?.username || "";
-      // TODO: Funny hack lol
-      let formattedPost = post as IPost;
-      formattedPost.ownerUsername = ownerUsername;
-
-      return formattedPost;
-    }
-
     let result: { [key: string]: any } = {
       success: false,
     };
@@ -132,20 +121,6 @@ router.get(
   "/v1/posts/self",
   [jsonParser, cookieParser(), sessionTokenChecker],
   async (req: express.Request, res: express.Response) => {
-    async function formatPost(post: any) {
-      let owner = await safeFindUserByID(post.owner);
-      let ownerUsername = owner?.username || "";
-      return {
-        id: post._id,
-        owner: ownerUsername,
-        dateTime: post.dateTime,
-        lastEditDateTime: post.lastEditDateTime,
-        group: post.group,
-        ownerUsername: ownerUsername,
-        content: post.content,
-      };
-    }
-
     let result: { [key: string]: any } = {
       success: false,
       posts: [],
@@ -174,4 +149,14 @@ router.get(
     res.status(200).json(result);
   }
 );
+
+async function formatPost(post: IPost) {
+  let owner = await safeFindUserByID(post.owner.toString());
+  let ownerUsername = owner?.username || "";
+  // TODO: Funny hack lol
+  let formattedPost = post as IPost;
+  formattedPost.ownerUsername = ownerUsername;
+
+  return formattedPost;
+}
 export { router };

@@ -54,9 +54,9 @@ router.get(
     }
     // get data according to context
     let fullUser = await User.findById(id);
-    let teacherData = (await fullUser?.getStudentData()) || {};
+    let studentData = (await fullUser?.getStudentData()) || {};
     result.success = true;
-    result.data = teacherData;
+    result.data = studentData;
     res.status(200).json(result);
     return result;
   }

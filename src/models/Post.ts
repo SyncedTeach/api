@@ -17,6 +17,8 @@ interface IPost {
   maxScore: number;
   score: number;
   description: string;
+  // TODO: funny hack lol
+  ownerUsername?: string;
 }
 
 const postSchema = new Schema<IPost>({
@@ -33,6 +35,8 @@ const postSchema = new Schema<IPost>({
   maxScore: Number,
   score: Number,
   description: String,
+  // TODO: funny hack lol
+  ownerUsername: String,
 });
 
 const Post = model<IPost>("Post", postSchema, "posts");

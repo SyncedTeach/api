@@ -81,11 +81,10 @@ router.get(
       let owner = await safeFindUserByID(post.owner.toString());
       let ownerUsername = owner?.username || "";
       // TODO: Funny hack lol
-      let toReturn = {
-        post: post as any,
-      };
-      toReturn.post.ownerUsername = ownerUsername;
-      return toReturn.post;
+      let formattedPost = post as IPost;
+      formattedPost.ownerUsername = ownerUsername;
+
+      return formattedPost;
     }
 
     let result: { [key: string]: any } = {

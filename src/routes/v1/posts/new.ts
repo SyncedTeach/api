@@ -11,27 +11,6 @@ var jsonParser = bodyParser.json();
 var router = express.Router();
 import { sessionTokenChecker } from "../../../middlewares/authorization";
 
-interface IAssignmentPost {
-  dueDate: Date;
-  maxScore: number;
-  score: number;
-  title: string;
-  description: string;
-}
-
-interface IExamPost {
-  dueDate: Date;
-  maxScore: number;
-  score: number;
-  title: string;
-  description: string;
-}
-
-interface IAnnouncementPost {
-  title: string;
-  description: string;
-}
-
 // TODO: add logging
 router.post(
   "/v1/posts/new",

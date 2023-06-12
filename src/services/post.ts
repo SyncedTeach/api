@@ -20,6 +20,7 @@ async function addPost(
     type: type,
     lastEditDateTime: dateTime,
     group: targetGroupID,
+    data: data,
   });
   await post.save();
 }

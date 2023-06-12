@@ -11,7 +11,7 @@ import { sessionTokenChecker } from "../../../middlewares/authorization";
 import { Group } from "../../../models/Group";
 import { User } from "../../../models/User";
 import { logWrite } from "../../../utilities/log";
-import { IPost, Post } from "../../../models/Post";
+import { Post } from "../../../models/Post";
 import { getTypeParameterOwner } from "typescript";
 var jsonParser = bodyParser.json();
 var router = express.Router();
@@ -53,7 +53,7 @@ router.get(
     let queryOwnerGroups = await Group.find({ members: queryOwnerID });
     let queryOwnerGroupIDs = queryOwnerGroups.map((element) => element._id);
     let queryOwnerAllowed = queryOwnerGroupIDs.findIndex(
-      (element) => element.toString() === (post as IPost).group.toString()
+      (element) => element.toString() === post?.group.toString()
     );
     if (!queryOwnerAllowed) {
       logWrite.info(

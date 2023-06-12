@@ -13,6 +13,10 @@ interface IPost {
   content: string;
   data: any;
   type: string;
+  dueDate: Date;
+  maxScore: number;
+  score: number;
+  description: string;
 }
 
 const postSchema = new Schema<IPost>({
@@ -24,8 +28,13 @@ const postSchema = new Schema<IPost>({
   type: String,
   content: String,
   group: Schema.Types.ObjectId,
-  data: Object
+  data: Object,
+  dueDate: Date,
+  maxScore: Number,
+  score: Number,
+  description: String,
 });
 
 const Post = model<IPost>("Post", postSchema, "posts");
+
 export { Post, IPost };

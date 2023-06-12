@@ -110,9 +110,10 @@ router.get(
     let queryOwnerID = queryOwner._id;
     let queryOwnerGroups = await Group.find({ members: queryOwnerID });
     let queryOwnerGroupIDs = queryOwnerGroups.map((element) => element._id);
-    let queryOwnerAllowed = queryOwnerGroupIDs.findIndex(
-      (element) => element.toString() === req.params.id
-    );
+    let queryOwnerAllowed =
+      queryOwnerGroupIDs.findIndex(
+        (element) => element.toString() === req.params.id
+      ) > -1;
     if (!queryOwnerAllowed) {
       logWrite.info(
         `Did not show posts to ${req.cookies.username}: Not in group`

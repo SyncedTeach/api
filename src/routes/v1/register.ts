@@ -61,8 +61,8 @@ router.post(
       });
     }
 
-    res.cookie("username", username, { httpOnly: true });
-    
+    res.cookie("username", username, { httpOnly: true, sameSite: "strict" });
+
     logWrite.info("register request!");
     res.json(await register(username, password, email));
   }

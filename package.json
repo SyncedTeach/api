@@ -8,8 +8,9 @@
     "test": "jest"
   },
   "type": "commonjs",
-  "author": "",
-  "license": "ISC",
+  "author": "mistertfy64",
+  "license": "MIT",
+  "private": true,
   "dependencies": {
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",

@@ -15,8 +15,6 @@ var router = express.Router();
 // };
 router.get("/", async (req: express.Request, res: express.Response) => {
   res.status(200).json({
-    version: "v1",
-    website: "test",
     success: true,
   });
 });

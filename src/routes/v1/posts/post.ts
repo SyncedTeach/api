@@ -151,9 +151,13 @@ router.get(
       res.status(403).json(result);
       return result;
     }
-    let groupPosts = await Post.count({ group: id });
+    let groupPosts = await Post.find({ group: id });
     result.success = true;
-    result.posts = groupPosts;
+    result.posts = {
+      announcements: groupPosts.filter((v) => v.type === "announcement").length,
+      assignments: groupPosts.filter((v) => v.type === "assignment").length,
+      exams: groupPosts.filter((v) => v.type === "exams").length,
+    };
     res.status(200).json(result);
   }
 );

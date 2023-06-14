@@ -77,6 +77,11 @@ router.get(
   async (req: express.Request, res: express.Response) => {
     let result: { [key: string]: any } = {
       success: false,
+      size: {
+        announcements: 0,
+        assignments: 0,
+        exams: 0,
+      },
     };
     let id = req.params.id;
     if (!/^[0-9a-f]{24}$/.test(id) || !checkHTML(id) || !checkMongoDB(id)) {
@@ -109,7 +114,15 @@ router.get(
     let groupPosts = (await Post.find({ group: id })).filter(
       (post) => post.group.toString() === req.params.id
     );
+    result.size.announcements += groupPosts.filter(
+      (v) => v.type === "announcement"
+    ).length;
+    result.size.assignments += groupPosts.filter(
+      (v) => v.type === "assignment"
+    ).length;
+    result.size.exams += groupPosts.filter((v) => v.type === "exam").length;
     let formattedGroupPosts = await Promise.all(groupPosts.map(formatPost));
+
     result.success = true;
     result.posts = formattedGroupPosts;
     res.status(200).json(result);
@@ -123,11 +136,6 @@ router.get(
     let result: { [key: string]: any } = {
       success: false,
       posts: [],
-      size: {
-        announcements: 0,
-        assignments: 0,
-        exams: 0,
-      },
     };
     let id = req.params.id;
     let queryOwner = await safeFindUserByUsername(res.locals.username);
@@ -146,13 +154,7 @@ router.get(
     for (let groupID of queryOwnerGroupIDs) {
       let groupName = queryOwnerGroups.find((v) => v._id === groupID);
       let groupPosts = await Post.find({ group: groupID });
-      result.size.announcements += groupPosts.filter(
-        (v) => v.type === "announcement"
-      ).length;
-      result.size.assignments += groupPosts.filter(
-        (v) => v.type === "assignment"
-      ).length;
-      result.size.exams += groupPosts.filter((v) => v.type === "exam").length;
+
       let resolvedGroupPosts = await Promise.all(groupPosts.map(formatPost));
       let formattedGroupPosts = resolvedGroupPosts.map((v) => ({
         ...v.toObject(),

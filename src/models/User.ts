@@ -117,6 +117,25 @@ userSchema.methods.getStudentData = async function getStudentData() {
       const ownerFormat = ownerResults.map((user) => user?.username).join(", ");
       // console.log('ownerFormat:', ownerFormat);
 
+      const postsSize = {
+        announcements: 0,
+        assignments: 0,
+        exams: 0,
+      }
+      // get posts from group
+      const postsFromGroup = await Post.find({ group: group._id }).lean();
+      // console.log('postsFromGroup:', postsFromGroup);
+      postsFromGroup.forEach((post) => {
+        if (post.type === "announcement") {
+          postsSize.announcements++;
+        } else if (post.type === "assignment") {
+          postsSize.assignments++;
+        }
+        else if (post.type === "exam") {
+          postsSize.exams++;
+        }
+      });
+
       return {
         name: group.name,
         id: group._id,
@@ -124,6 +143,7 @@ userSchema.methods.getStudentData = async function getStudentData() {
         owner: ownerFormat,
         owned: group.owners.includes(this._id),
         postsMade: postsMade,
+        postsSize: postsSize,
       };
     })
   );

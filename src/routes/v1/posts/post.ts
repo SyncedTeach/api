@@ -205,6 +205,7 @@ async function formatPost(post: any) {
   let ownerUsername = owner?.username || "";
   // TODO: Funny hack lol
   let formattedPost = post;
+  formattedPost.ownerUsername = ownerUsername;
   return formattedPost;
 }
 export { router };

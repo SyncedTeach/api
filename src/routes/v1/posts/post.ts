@@ -118,6 +118,48 @@ router.get(
 );
 
 router.get(
+  "/v1/posts/group/:id/size",
+  [jsonParser, cookieParser(), authenticationChecker],
+  async (req: express.Request, res: express.Response) => {
+    let result: { [key: string]: any } = {
+      success: false,
+    };
+    let id = req.params.id;
+    if (!/^[0-9a-f]{24}$/.test(id) || !checkHTML(id) || !checkMongoDB(id)) {
+      res.status(400).json(result);
+      return;
+    }
+    let queryOwner = await safeFindUserByUsername(res.locals.username);
+    if (!queryOwner) {
+      logWrite.info(
+        `Did not carry out action for ${res.locals.username}: User not found`
+      );
+      // incorrect cookies
+      res.status(401).json(result);
+      return result;
+    }
+    let queryOwnerID = queryOwner._id;
+    let queryOwnerGroups = await Group.find({ members: queryOwnerID });
+    let queryOwnerGroupIDs = queryOwnerGroups.map((element) => element._id);
+    let queryOwnerAllowed =
+      queryOwnerGroupIDs.findIndex(
+        (element) => element.toString() === req.params.id
+      ) > -1;
+    if (!queryOwnerAllowed) {
+      logWrite.info(
+        `Did not show posts to ${res.locals.username}: Not in group`
+      );
+      res.status(403).json(result);
+      return result;
+    }
+    let groupPosts = await Post.count({ group: id });
+    result.success = true;
+    result.posts = groupPosts;
+    res.status(200).json(result);
+  }
+);
+
+router.get(
   "/v1/posts/self",
   [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {

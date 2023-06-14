@@ -12,7 +12,6 @@ import { Group } from "../../../models/Group";
 import { User } from "../../../models/User";
 import { logWrite } from "../../../utilities/log";
 import { IPost, Post } from "../../../models/Post";
-import { getTypeParameterOwner } from "typescript";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 // TODO: add logging
@@ -182,8 +181,13 @@ router.get(
     let queryOwnerGroupIDs = queryOwnerGroups.map((element) => element._id);
 
     for (let groupID of queryOwnerGroupIDs) {
+      let groupName = queryOwnerGroups.find((v) => v._id === groupID);
       let groupPosts = await Post.find({ group: groupID });
-      let formattedGroupPosts = await Promise.all(groupPosts.map(formatPost));
+      let resolvedGroupPosts = await Promise.all(groupPosts.map(formatPost));
+      let formattedGroupPosts = resolvedGroupPosts.map((v) => ({
+        ...v.toObject(),
+        groupName: groupName?.name || "",
+      }));
       result.posts = result.posts.concat(formattedGroupPosts);
     }
 
@@ -192,13 +196,11 @@ router.get(
   }
 );
 
-async function formatPost(post: IPost) {
+async function formatPost(post: any) {
   let owner = await safeFindUserByID(post.owner.toString());
   let ownerUsername = owner?.username || "";
   // TODO: Funny hack lol
-  let formattedPost = post as IPost;
-  formattedPost.ownerUsername = ownerUsername;
-
+  let formattedPost = post;
   return formattedPost;
 }
 export { router };

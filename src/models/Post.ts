@@ -19,6 +19,7 @@ interface IPost {
   description: string;
   // TODO: funny hack lol
   ownerUsername?: string;
+  groupName?: string;
 }
 
 const postSchema = new Schema<IPost>({

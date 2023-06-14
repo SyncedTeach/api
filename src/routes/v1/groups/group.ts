@@ -16,6 +16,7 @@ import { Group } from "../../../models/Group";
 import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
 import { addUsernames } from "../../../utilities/add-usernames";
 import mongoose, { Types } from "mongoose";
+import { Post } from "../../../models/Post";
 interface GroupJoinResult {
   success: boolean;
   groupID?: string | undefined;
@@ -40,6 +41,11 @@ router.get(
 
     let result: { [key: string]: any } = {
       success: false,
+      posts: {
+        announcements: 0,
+        assignments: 0,
+        exams: 0,
+      },
     };
     let userObject = await safeFindUserByUsername(res.locals.username);
     // we already know username exists because we checked it
@@ -67,11 +73,22 @@ router.get(
     }
     result.success = true;
     // format usernames
+    let groupPosts = (await Post.find({ group: id })).filter(
+      (post) => post.group.toString() === req.params.id
+    );
+    result.posts.announcements += groupPosts.filter(
+      (v) => v.type === "announcement"
+    ).length;
+    result.posts.assignments += groupPosts.filter(
+      (v) => v.type === "assignment"
+    ).length;
+    result.posts.exams += groupPosts.filter((v) => v.type === "exam").length;
     let formattedMembers = await getUsername(group.members);
     let formattedOwners = await getUsername(group.owners);
     group.members = formattedMembers;
     group.owners = formattedOwners;
     result.group = group;
+
     // await addUsernames(result.data, "members", "memberUsernames");
     // await addUsernames(result.data, "owners", "ownerUsernames");
 

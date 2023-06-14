@@ -7,11 +7,11 @@ import configuration from "../../configuration.json";
 import { checkRank, safeFindUserByID } from "../../services/authorize";
 var jsonParser = bodyParser.json();
 var router = express.Router();
-import { sessionTokenChecker } from "../../middlewares/authorization";
+import { authenticationChecker } from "../../middlewares/authentication";
 import { User } from "../../models/User";
 router.get(
   "/v1/user/:id",
-  [jsonParser, cookieParser(), sessionTokenChecker],
+  [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let result = {
       success: false,

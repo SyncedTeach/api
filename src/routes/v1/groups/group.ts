@@ -11,7 +11,7 @@ import { addGroup, addToGroup } from "../../../services/group";
 import { logWrite } from "../../../utilities/log";
 var jsonParser = bodyParser.json();
 var router = express.Router();
-import { sessionTokenChecker } from "../../../middlewares/authorization";
+import { authenticationChecker } from "../../../middlewares/authentication";
 import { Group } from "../../../models/Group";
 import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
 import { addUsernames } from "../../../utilities/add-usernames";
@@ -23,7 +23,7 @@ interface GroupJoinResult {
 // TODO: add more conditions
 router.get(
   "/v1/groups/:id",
-  [jsonParser, cookieParser(), sessionTokenChecker],
+  [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     async function getUsername(ids: Array<string>) {
       let elements = [];

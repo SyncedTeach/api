@@ -9,7 +9,7 @@ import configuration from "../../../configuration.json";
 import { User } from "../../../models/User";
 var jsonParser = bodyParser.json();
 var router = express.Router();
-import { sessionTokenChecker } from "../../../middlewares/authorization";
+import { authenticationChecker } from "../../../middlewares/authentication";
 // TODO: add logging
 interface KeyCreationResult {
   success: boolean;
@@ -17,7 +17,7 @@ interface KeyCreationResult {
 }
 router.post(
   "/v1/keys/new",
-  [jsonParser, cookieParser(), sessionTokenChecker],
+  [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let result: KeyCreationResult = {
       success: false,

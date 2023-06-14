@@ -7,13 +7,13 @@ import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
 import { addGroup } from "../../../services/group";
 import { logWrite } from "../../../utilities/log";
 import configuration from "../../../configuration.json";
-import { sessionTokenChecker } from "../../../middlewares/authorization";
+import { authenticationChecker } from "../../../middlewares/authentication";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 // TODO: add logging
 router.post(
   "/v1/groups/new",
-  [jsonParser, cookieParser(), sessionTokenChecker],
+  [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let name = req.body["name"];
     let result = {

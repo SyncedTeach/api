@@ -9,12 +9,12 @@ import { logWrite } from "../../../utilities/log";
 import configuration from "../../../configuration.json";
 var jsonParser = bodyParser.json();
 var router = express.Router();
-import { sessionTokenChecker } from "../../../middlewares/authorization";
+import { authenticationChecker } from "../../../middlewares/authentication";
 
 // TODO: add logging
 router.post(
   "/v1/posts/new",
-  [jsonParser, cookieParser(), sessionTokenChecker],
+  [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let content = req.body["content"];
     let targetGroupID = req.body["targetgroup"];
@@ -52,7 +52,7 @@ router.post(
     if (type == "assignment") {
       let dueDate = data["dueDate"];
       let maxScore = data["maxScore"];
-      let score = "?"
+      let score = "?";
       let title = data["title"];
       let description = data["description"];
       if (!dueDate || !maxScore || !title || !description) {
@@ -66,7 +66,7 @@ router.post(
     if (type == "exam") {
       let dueDate = data["dueDate"];
       let maxScore = data["maxScore"];
-      let score = "?"
+      let score = "?";
       let title = data["title"];
       let description = data["description"];
       if (!dueDate || !maxScore || !title || !description) {

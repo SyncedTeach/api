@@ -5,12 +5,12 @@ import { logWrite } from "../../../utilities/log";
 import configuration from "../../../configuration.json";
 import { checkRank, safeFindUserByID } from "../../../services/authorize";
 import { User } from "../../../models/User";
-import { sessionTokenChecker } from "../../../middlewares/authorization";
+import { authenticationChecker } from "../../../middlewares/authentication";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 router.get(
   "/v1/user/:id/student",
-  [jsonParser, cookieParser(), sessionTokenChecker, sessionTokenChecker],
+  [jsonParser, cookieParser(), authenticationChecker, authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let result = {
       success: false,

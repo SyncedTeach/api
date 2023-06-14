@@ -2,7 +2,7 @@ import express from "express";
 import { logWrite } from "../utilities/log";
 import { checkOwnerOfToken } from "../services/token";
 
-const sessionTokenChecker = async function (
+const authenticationChecker = async function (
   request: express.Request,
   response: express.Response,
   next: express.NextFunction
@@ -27,4 +27,4 @@ const sessionTokenChecker = async function (
   next();
 };
 
-export { sessionTokenChecker };
+export { authenticationChecker };

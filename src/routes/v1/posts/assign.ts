@@ -9,13 +9,13 @@ import { logWrite } from "../../../utilities/log";
 import configuration from "../../../configuration.json";
 var jsonParser = bodyParser.json();
 var router = express.Router();
-import { sessionTokenChecker } from "../../../middlewares/authorization";
+import { authenticationChecker } from "../../../middlewares/authentication";
 import { Post } from "../../../models/Post";
 
 // TODO: add logging
 router.post(
   "/v1/posts/assign/:postID/:studentID",
-  [jsonParser, cookieParser(), sessionTokenChecker],
+  [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let result = {
       success: false,

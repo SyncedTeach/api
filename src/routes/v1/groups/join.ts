@@ -7,7 +7,7 @@ import { addGroup, addToGroup } from "../../../services/group";
 import { logWrite } from "../../../utilities/log";
 var jsonParser = bodyParser.json();
 var router = express.Router();
-import { sessionTokenChecker } from "../../../middlewares/authorization";
+import { authenticationChecker } from "../../../middlewares/authentication";
 interface GroupJoinResult {
   success: boolean;
   groupID?: string | undefined;
@@ -15,7 +15,7 @@ interface GroupJoinResult {
 // TODO: add more conditions
 router.post(
   "/v1/groups/join/:joinCode",
-  [jsonParser, cookieParser(), sessionTokenChecker],
+  [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let result: GroupJoinResult = {
       success: false,

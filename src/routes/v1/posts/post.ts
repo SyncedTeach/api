@@ -7,7 +7,7 @@ import {
   safeFindUserByID,
   safeFindUserByUsername,
 } from "../../../services/authorize";
-import { sessionTokenChecker } from "../../../middlewares/authorization";
+import { authenticationChecker } from "../../../middlewares/authentication";
 import { Group } from "../../../models/Group";
 import { User } from "../../../models/User";
 import { logWrite } from "../../../utilities/log";
@@ -19,7 +19,7 @@ var router = express.Router();
 // TODO: add reasons why post failed
 router.get(
   "/v1/posts/post/:id",
-  [jsonParser, cookieParser(), sessionTokenChecker],
+  [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let result = {
       success: false,
@@ -74,7 +74,7 @@ router.get(
 
 router.get(
   "/v1/posts/group/:id",
-  [jsonParser, cookieParser(), sessionTokenChecker],
+  [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let result: { [key: string]: any } = {
       success: false,
@@ -119,7 +119,7 @@ router.get(
 
 router.get(
   "/v1/posts/self",
-  [jsonParser, cookieParser(), sessionTokenChecker],
+  [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let result: { [key: string]: any } = {
       success: false,

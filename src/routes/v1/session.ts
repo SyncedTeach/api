@@ -19,11 +19,11 @@ router.get(
     // get data
     const sessionInfo = await getSessionInfo(
       req.cookies.sessionToken || "",
-      req.cookies.username || ""
+      res.locals.username || ""
     );
     if (!sessionInfo) {
       logWrite.info(
-        `Accessing data for ${req.cookies.username} denied: Invalid session token`
+        `Accessing data for ${res.locals.username} denied: Invalid session token`
       );
       res.status(401).json(result);
       return result;

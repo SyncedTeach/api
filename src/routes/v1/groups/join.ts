@@ -23,7 +23,7 @@ router.post(
 
     let cookies = req.cookies;
 
-    let userObject = await safeFindUserByUsername(req.cookies.username);
+    let userObject = await safeFindUserByUsername(res.locals.username);
     // we already know username exists because we checked it
     let userID = userObject?._id || "";
     // this one adds to group

@@ -41,7 +41,7 @@ router.get(
     let result: { [key: string]: any } = {
       success: false,
     };
-    let userObject = await safeFindUserByUsername(req.cookies.username);
+    let userObject = await safeFindUserByUsername(res.locals.username);
     // we already know username exists because we checked it
     let userID = userObject?._id || "";
     let id = req.params.id;

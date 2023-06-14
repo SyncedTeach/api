@@ -48,7 +48,7 @@ router.post(
     }
     if (post.type !== "assignment" && post.type !== "exam") {
       console.log(
-        `Did not assign to post for ${req.cookies.username}: Invalid type`
+        `Did not assign to post for ${res.locals.username}: Invalid type`
       );
       res.status(403).json(result);
       return;
@@ -57,7 +57,7 @@ router.post(
     let update: { [key: string]: any } = {};
     update[assigneeID] = assignment;
     await Post.findOneAndUpdate({ _id: postID }, { $set: { scores: update } });
-    logWrite.info(`Successfully modified new post for ${req.cookies.username}`);
+    logWrite.info(`Successfully modified new post for ${res.locals.username}`);
     result.success = true;
     res.status(200).json(result);
     return result;

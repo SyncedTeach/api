@@ -23,7 +23,7 @@ router.post(
     };
     if (!/^[0-9a-f]{24}$/.test(targetGroupID) || !checkMongoDB(targetGroupID)) {
       logWrite.info(
-        `Did not create post for ${req.cookies.username}: Invalid group id`
+        `Did not create post for ${res.locals.username}: Invalid group id`
       );
       res.status(400).json(result);
       return;
@@ -33,7 +33,7 @@ router.post(
 
     if (!(type == "announcement" || type == "assignment" || type == "exam")) {
       logWrite.info(
-        `Did not create post for ${req.cookies.username}: Invalid type`
+        `Did not create post for ${res.locals.username}: Invalid type`
       );
       return res.status(400).json(result);
     }
@@ -43,7 +43,7 @@ router.post(
       let description = data["description"];
       if (!title || !description) {
         logWrite.info(
-          `Did not create post for ${req.cookies.username}: Invalid data for announcement`
+          `Did not create post for ${res.locals.username}: Invalid data for announcement`
         );
         return res.status(400).json(result);
       }
@@ -57,7 +57,7 @@ router.post(
       let description = data["description"];
       if (!dueDate || !maxScore || !title || !description) {
         logWrite.info(
-          `Did not create post for ${req.cookies.username}: Invalid data`
+          `Did not create post for ${res.locals.username}: Invalid data`
         );
         return res.status(400).json(result);
       }
@@ -71,29 +71,27 @@ router.post(
       let description = data["description"];
       if (!dueDate || !maxScore || !title || !description) {
         logWrite.info(
-          `Did not create post for ${req.cookies.username}: Invalid data`
+          `Did not create post for ${res.locals.username}: Invalid data`
         );
         return res.status(400).json(result);
       }
     }
 
     // check if user has permissions
-    let username = req.cookies.username;
+    let username = res.locals.username;
     let rankResult = await checkRank(
       username,
       configuration.authorization.posting.regular
     );
     if (!rankResult.success) {
-      logWrite.info(
-        `Did not create post for ${req.cookies.username}: Low rank`
-      );
+      logWrite.info(`Did not create post for ${res.locals.username}: Low rank`);
       res.status(403).json(result);
       return result;
     }
     // sanitize/validate data
     if (!checkHTML(content) || !checkMongoDB(content)) {
       logWrite.info(
-        `Did not create post for ${req.cookies.username}: Illegal post`
+        `Did not create post for ${res.locals.username}: Illegal post`
       );
       res.status(400).json(result);
       return result;
@@ -103,7 +101,7 @@ router.post(
     let userID = userObject?._id || "";
     // addPost(content, username, userID, targetGroupID);
     addPost(content, username, userID, targetGroupID, type, data);
-    logWrite.info(`Successfully created new post for ${req.cookies.username}`);
+    logWrite.info(`Successfully created new post for ${res.locals.username}`);
     result.success = true;
     res.status(200).json(result);
     return result;

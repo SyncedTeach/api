@@ -39,11 +39,11 @@ router.get(
       return;
     }
     // get user id
-    let queryOwner = await safeFindUserByUsername(req.cookies.username);
+    let queryOwner = await safeFindUserByUsername(res.locals.username);
     // shouldn't happen
     if (!queryOwner) {
       logWrite.info(
-        `Did not carry out action for ${req.cookies.username}: User not found`
+        `Did not carry out action for ${res.locals.username}: User not found`
       );
       // incorrect cookies
       res.status(401).json(result);
@@ -59,7 +59,7 @@ router.get(
       ) > -1;
     if (!queryOwnerAllowed) {
       logWrite.info(
-        `Did not show post to ${req.cookies.username}: Not in group`
+        `Did not show post to ${res.locals.username}: Not in group`
       );
       res.status(403).json(result);
       return result;
@@ -84,10 +84,10 @@ router.get(
       res.status(400).json(result);
       return;
     }
-    let queryOwner = await safeFindUserByUsername(req.cookies.username);
+    let queryOwner = await safeFindUserByUsername(res.locals.username);
     if (!queryOwner) {
       logWrite.info(
-        `Did not carry out action for ${req.cookies.username}: User not found`
+        `Did not carry out action for ${res.locals.username}: User not found`
       );
       // incorrect cookies
       res.status(401).json(result);
@@ -102,7 +102,7 @@ router.get(
       ) > -1;
     if (!queryOwnerAllowed) {
       logWrite.info(
-        `Did not show posts to ${req.cookies.username}: Not in group`
+        `Did not show posts to ${res.locals.username}: Not in group`
       );
       res.status(403).json(result);
       return result;
@@ -126,10 +126,10 @@ router.get(
       posts: [],
     };
     let id = req.params.id;
-    let queryOwner = await safeFindUserByUsername(req.cookies.username);
+    let queryOwner = await safeFindUserByUsername(res.locals.username);
     if (!queryOwner) {
       logWrite.info(
-        `Did not carry out action for ${req.cookies.username}: User not found`
+        `Did not carry out action for ${res.locals.username}: User not found`
       );
       // incorrect cookies
       res.status(401).json(result);

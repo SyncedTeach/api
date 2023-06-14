@@ -19,14 +19,14 @@ router.get(
     let id = req.params.id;
     // check if self is given
     if (req.params.id === "self") {
-      const user = await User.findOne({ username: req.cookies.username });
+      const user = await User.findOne({ username: res.locals.username });
       id = user ? user._id.toString() : "";
     }
     // get data
     let data = await safeFindUserByID(id);
     if (!data) {
       logWrite.info(
-        `Accessing data for ${req.cookies.username} denied: Target not found`
+        `Accessing data for ${res.locals.username} denied: Target not found`
       );
       res.status(404).json(result);
       return result;
@@ -34,20 +34,20 @@ router.get(
     // check rank to see it's really a student
     if (!data.membership.isStudent) {
       logWrite.info(
-        `Accessing data for ${req.cookies.username} denied: Wrong role`
+        `Accessing data for ${res.locals.username} denied: Wrong role`
       );
       res.status(404).json(result);
       return result;
     }
     // check for permission
-    let usernameResult = data.username === req.cookies.username;
+    let usernameResult = data.username === res.locals.username;
     let rankResult = await checkRank(
-      req.cookies.username || "",
+      res.locals.username || "",
       configuration.authorization.dataAccess.full
     );
     if (!(usernameResult || rankResult.success)) {
       logWrite.info(
-        `Accessing data for ${req.cookies.username} denied: Low rank`
+        `Accessing data for ${res.locals.username} denied: Low rank`
       );
       res.status(403).json(result);
       return result;

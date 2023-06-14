@@ -10,7 +10,7 @@ router.get(
   async (req: express.Request, res: express.Response) => {
     let result = await checkOwnerOfToken(
       req.cookies.token,
-      req.cookies.username
+      res.locals.username
     );
     if (!result.success) {
       return res.status(401).json(result);

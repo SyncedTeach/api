@@ -23,14 +23,14 @@ router.post(
       success: false,
     };
     // check if user has permissions
-    let username = req.cookies.username;
+    let username = res.locals.username;
     let rankResult = await checkRank(
       username,
       configuration.authorization.keys.create
     );
     if (!rankResult.success) {
       logWrite.info(
-        `Did not create API key for ${req.cookies.username}: Low rank`
+        `Did not create API key for ${res.locals.username}: Low rank`
       );
       res.status(403).json(result);
       return result;
@@ -43,7 +43,7 @@ router.post(
       result.newKey = key;
     }
     logWrite.info(
-      `Successfully created new API Key for ${req.cookies.username}`
+      `Successfully created new API Key for ${res.locals.username}`
     );
     result.success = true;
     res.status(200).json(result);

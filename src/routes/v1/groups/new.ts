@@ -21,14 +21,14 @@ router.post(
       id: "",
     };
     // check if user has permissions
-    let username = req.cookies.username;
+    let username = res.locals.username;
     let rankResult = await checkRank(
       username,
       configuration.authorization.groups.create
     );
     if (!rankResult.success) {
       logWrite.info(
-        `Did not create group for ${req.cookies.username}: Low rank`
+        `Did not create group for ${res.locals.username}: Low rank`
       );
       res.status(403).json(result);
       return result;
@@ -36,7 +36,7 @@ router.post(
     // sanitize/validate data
     if (!checkHTML(name) || !checkMongoDB(name)) {
       logWrite.info(
-        `Did not create group for ${req.cookies.username}: Illegal group name "${name}"`
+        `Did not create group for ${res.locals.username}: Illegal group name "${name}"`
       );
       res.status(400).json(result);
       return result;
@@ -45,7 +45,7 @@ router.post(
     // we already know username exists because we checked it
     let userID = userObject?._id || "";
     let newGroup = await addGroup(name, username, userID);
-    logWrite.info(`Successfully created new group for ${req.cookies.username}`);
+    logWrite.info(`Successfully created new group for ${res.locals.username}`);
     result.success = true;
     result.id = newGroup;
     res.status(200).json(result);

@@ -104,4 +104,46 @@ router.get(
     return result;
   }
 );
+
+router.get(
+  "/v1/groups/code/:joinCode",
+  [jsonParser, cookieParser()],
+  /**
+   * This route allows fetching a join code to get the group information with that join code.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.params.joinCode The join code of the group to get.
+   * @returns An object with the key `success`.
+   */
+  async (req: express.Request, res: express.Response) => {
+    let result: { [key: string]: any } = {
+      success: false,
+    };
+
+    let joinCode = req.params.joinCode;
+    // ...
+    if (!checkHTML(joinCode) || !checkMongoDB(joinCode)) {
+      res.status(400).json(result);
+      return result;
+    }
+    // TODO: temporary workaround
+    let group = await Group.findOne({
+      joinCode: req.params.joinCode,
+    }).lean();
+    if (!group) {
+      logWrite.info(`Group ${group} not found.`);
+      return result;
+    }
+    let groupMembers = group.members.length;
+    result.success = true;
+    result.group = {
+      members: groupMembers,
+      name: group.name,
+    };
+    res.status(200).json(result);
+    return result;
+  }
+);
+
 export { router };

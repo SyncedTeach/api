@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import crypto from "crypto";
 import * as envfile from "envfile";
 import { resolve } from "path";
-import { readFile, writeFileSync } from "fs";
+import { readFile, writeFileSync, existsSync } from "fs";
 
 const check = async () => {
   dotenv.config();
@@ -79,8 +79,15 @@ const start = async (key: string, mongouri: string) => {
 export const writeEnvToFile = (
   envVariables: { key: string; value: any }[]
 ): void => {
+
   // get `.env` from path of current directory
   const path = resolve(__dirname, "../../.env");
+    // create if not exist
+  if (!existsSync(path)) {
+    // create file
+    writeFileSync(path, "");
+  }
+
   readFile(path, "utf8", (err, data) => {
     if (err) {
       console.error(err);

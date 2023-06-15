@@ -18,6 +18,14 @@ interface KeyCreationResult {
 router.post(
   "/v1/keys/new",
   [jsonParser, cookieParser(), authenticationChecker],
+  /**
+   * This route allows the creation of an API key.
+   * The API key will be saved in the database (hashed).
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @returns An object with the key `success`.
+   */
   async (req: express.Request, res: express.Response) => {
     let result: KeyCreationResult = {
       success: false,

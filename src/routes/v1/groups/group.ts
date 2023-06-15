@@ -25,6 +25,14 @@ interface GroupJoinResult {
 router.get(
   "/v1/groups/:id",
   [jsonParser, cookieParser(), authenticationChecker],
+  /**
+   * This route allows fetching an ID to get the group information with that ID.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.params.id The ID of the group to get.
+   * @returns An object with the key `success`.
+   */
   async (req: express.Request, res: express.Response) => {
     async function getUsername(ids: Array<string>) {
       let elements = [];

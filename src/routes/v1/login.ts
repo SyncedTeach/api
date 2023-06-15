@@ -7,6 +7,15 @@ var router = express.Router();
 router.post(
   "/v1/login",
   [jsonParser, cookieParser()],
+  /**
+   * This route allows logging in of users.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.body.username The username of the user attempting to log in.
+   * @param {string} req.body.password The password of the user attempting to log in.
+   * @returns An object with the key `success`. It will also send 2 cookies if `success` is `true`.
+   */
   async (req: express.Request, res: express.Response) => {
     let result = await login(req.body.username, req.body.password);
     if (result.success) {

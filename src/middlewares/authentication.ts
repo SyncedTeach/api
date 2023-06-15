@@ -4,6 +4,16 @@ import { checkOwnerOfToken } from "../services/token";
 import { User } from "../models/User";
 import { safeFindUserByUsername } from "../services/authorize";
 import bcrypt from "bcrypt";
+// TODO: Remove username not found when using API key.
+/**
+ * This route allows fetching an ID to get a post with that ID.
+ * @function
+ * @param {express.Request} request The request object.
+ * @param {express.Response} response The response object.
+ * @param {string} request.cookies.username The fetcher's username, if you are going to use with cookies.
+ * @param {string} request.cookies.sessionToken The fetcher's username, if you are going to use with cookies
+ * @param {string} request.headers The fetcher's username and API key, if you are going to use with API Keys.
+ */
 const authenticationChecker = async function (
   request: express.Request,
   response: express.Response,

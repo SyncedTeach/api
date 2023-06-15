@@ -5,6 +5,12 @@ import { createToken } from "./token";
 import { logWrite } from "../utilities/log";
 
 // TODO: VALIDATE DATA!!!!!!!!!!!!!!!!!!!
+/**
+ * Allows the user to login.
+ * @param username The username of the user attempting to login.
+ * @param password The password of the user attempting to login.
+ * @returns An object with the keys `info`.
+ */
 async function login(username: string, password: string) {
   let info = {
     token: "",
@@ -60,6 +66,13 @@ async function login(username: string, password: string) {
 }
 
 // TODO: Create a user and return a token
+/**
+ * Allows the user to login.
+ * @param username The username of the new user.
+ * @param password The password of the new user.
+ * @param personal_email The email of the new user.
+ * @returns An object with the keys `info`.
+ */
 async function register(
   username: string,
   password: string,

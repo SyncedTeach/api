@@ -11,6 +11,14 @@ var router = express.Router();
 router.get(
   "/v1/user/:id/student",
   [jsonParser, cookieParser(), authenticationChecker, authenticationChecker],
+  /**
+   * This route allows fetching an ID to get an User object's student data.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.params.id The ID of the user to get, or `self` to get data of the currently logged in user.
+   * @returns An object with the keys `success` and `data`. `data` will contain some student data of the target user if `success` is true.
+   */
   async (req: express.Request, res: express.Response) => {
     let result = {
       success: false,

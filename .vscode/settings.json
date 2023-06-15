@@ -1,7 +1,3 @@
 {
-  "cSpell.words": [
-    "dompurify",
-    "envfile",
-    "middlewares"
-  ]
+  "cSpell.words": ["dompurify", "envfile", "middlewares", "targetgroup"]
 }

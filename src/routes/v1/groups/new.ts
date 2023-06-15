@@ -13,6 +13,14 @@ var router = express.Router();
 // TODO: add logging
 router.post(
   "/v1/groups/new",
+  /**
+   * This route allows an authorized user to create a new group.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.body.name The name of the new group.
+   * @returns An object with the key `success`.
+   */
   [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let name = req.body["name"];

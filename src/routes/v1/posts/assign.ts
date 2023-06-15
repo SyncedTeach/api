@@ -16,6 +16,16 @@ import { Post } from "../../../models/Post";
 router.post(
   "/v1/posts/assign/:postID/:studentID",
   [jsonParser, cookieParser(), authenticationChecker],
+  /**
+   * This route allows fetching an ID to get a post with that ID.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.params.postID The ID of the post to assign to.
+   * @param {string} req.params.studentID The ID of the student to assign to.
+   * @param {number} req.body.assignment What to assign to the student.
+   * @returns An object with the key `success`.
+   */
   async (req: express.Request, res: express.Response) => {
     let result = {
       success: false,

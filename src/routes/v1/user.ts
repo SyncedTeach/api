@@ -9,9 +9,18 @@ var jsonParser = bodyParser.json();
 var router = express.Router();
 import { authenticationChecker } from "../../middlewares/authentication";
 import { User } from "../../models/User";
+import { ObjectId } from "mongoose";
 router.get(
   "/v1/user/:id",
   [jsonParser, cookieParser(), authenticationChecker],
+  /**
+   * This route allows fetching an ID to get an User object.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string|ObjectId} req.params.id The ID of the target user.
+   * @returns An object with the keys `success` and `data`. `data` is the target user's data, if `success` is true.
+   */
   async (req: express.Request, res: express.Response) => {
     let result = {
       success: false,

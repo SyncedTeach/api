@@ -19,6 +19,14 @@ var router = express.Router();
 router.get(
   "/v1/posts/post/:id",
   [jsonParser, cookieParser(), authenticationChecker],
+  /**
+   * This route allows fetching an ID to get a post with that ID.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.params.id The ID of the post to get.
+   * @returns An object with the keys `success` and `data`. `data` will contain said post if `success` is true.
+   */
   async (req: express.Request, res: express.Response) => {
     let result = {
       success: false,
@@ -74,6 +82,14 @@ router.get(
 router.get(
   "/v1/posts/group/:id",
   [jsonParser, cookieParser(), authenticationChecker],
+  /**
+   * This route allows fetching an ID to get all post in the group with that ID.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.params.id The ID of the group to get posts from.
+   * @returns An object with the keys `success` and `data`. `data` will contain posts from the group if `success` is true.
+   */
   async (req: express.Request, res: express.Response) => {
     let result: { [key: string]: any } = {
       success: false,
@@ -131,6 +147,13 @@ router.get(
 
 router.get(
   "/v1/posts/self",
+  /**
+   * This route allows to get all posts an user can see.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @returns An object with the keys `success` and `posts`. `posts` will contain all posts the user can see if `success` is true.
+   */
   [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
     let result: { [key: string]: any } = {
@@ -168,6 +191,11 @@ router.get(
   }
 );
 
+/**
+ * This function adds extra data to the post
+ * @param post The post to add extra to
+ * @returns The post with extra data added.
+ */
 async function formatPost(post: any) {
   let owner = await safeFindUserByID(post.owner.toString());
   let ownerUsername = owner?.username || "";

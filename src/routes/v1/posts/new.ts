@@ -15,6 +15,15 @@ import { authenticationChecker } from "../../../middlewares/authentication";
 router.post(
   "/v1/posts/new",
   [jsonParser, cookieParser(), authenticationChecker],
+  /**
+   * This route allows an user to create a new post.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.body.content The content of the new post.
+   * @param {string} req.body.targetgroup The group to write the post to.
+   * @returns An object with the keys `success` and `data`. `data` will contain said post if `success` is true.
+   */
   async (req: express.Request, res: express.Response) => {
     let content = req.body["content"];
     let targetGroupID = req.body["targetgroup"];

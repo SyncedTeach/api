@@ -16,6 +16,14 @@ interface GroupJoinResult {
 router.post(
   "/v1/groups/join/:joinCode",
   [jsonParser, cookieParser(), authenticationChecker],
+  /**
+   * This route allows a user to join a group.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {object} req.cookies The cookies of the user.
+   * @returns An object with the key `success`.
+   */
   async (req: express.Request, res: express.Response) => {
     let result: GroupJoinResult = {
       success: false,

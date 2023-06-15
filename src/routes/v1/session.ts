@@ -11,6 +11,14 @@ import { authenticationChecker } from "../../middlewares/authentication";
 router.get(
   "/v1/user",
   [jsonParser, cookieParser(), authenticationChecker],
+  /**
+   * This route allows passing in a session token to get a user's session.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.cookies.sessionToken The sessionToken of the user making the request.
+   * @returns An object with the keys `success` and `data`. `data` is the target user's data, if `success` is true.
+   */
   async (req: express.Request, res: express.Response) => {
     let result = {
       success: false,

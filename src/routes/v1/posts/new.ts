@@ -9,54 +9,110 @@ import { logWrite } from "../../../utilities/log";
 import configuration from "../../../configuration.json";
 var jsonParser = bodyParser.json();
 var router = express.Router();
+import { authenticationChecker } from "../../../middlewares/authentication";
+
 // TODO: add logging
 router.post(
   "/v1/posts/new",
-  [jsonParser, cookieParser()],
+  [jsonParser, cookieParser(), authenticationChecker],
+  /**
+   * This route allows an user to create a new post.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.body.content The content of the new post.
+   * @param {string} req.body.targetgroup The group to write the post to.
+   * @returns An object with the keys `success` and `data`. `data` will contain said post if `success` is true.
+   */
   async (req: express.Request, res: express.Response) => {
-    let content = req.body["post-content"];
+    let content = req.body["content"];
+    let targetGroupID = req.body["targetgroup"];
     let result = {
       success: false,
     };
-    // check if user is real
-    let cookies = req.cookies;
-    let cookieResult = await checkOwnerOfToken(
-      cookies.sessionToken || "",
-      cookies.username || ""
-    );
-    if (!cookieResult.success) {
+    if (!/^[0-9a-f]{24}$/.test(targetGroupID) || !checkMongoDB(targetGroupID)) {
       logWrite.info(
-        `Did not create post for ${cookies.username}: Invalid cookies`
+        `Did not create post for ${res.locals.username}: Invalid group id`
       );
-      res.json(result);
-      return result;
+      res.status(400).json(result);
+      return;
     }
+    let type = req.body["type"];
+    let data = req.body["data"];
+
+    if (!(type == "announcement" || type == "assignment" || type == "exam")) {
+      logWrite.info(
+        `Did not create post for ${res.locals.username}: Invalid type`
+      );
+      return res.status(400).json(result);
+    }
+
+    if (type == "announcement") {
+      let title = data["title"];
+      let description = data["description"];
+      if (!title || !description) {
+        logWrite.info(
+          `Did not create post for ${res.locals.username}: Invalid data for announcement`
+        );
+        return res.status(400).json(result);
+      }
+    }
+
+    if (type == "assignment") {
+      let dueDate = data["dueDate"];
+      let maxScore = data["maxScore"];
+      let score = "?";
+      let title = data["title"];
+      let description = data["description"];
+      if (!dueDate || !maxScore || !title || !description) {
+        logWrite.info(
+          `Did not create post for ${res.locals.username}: Invalid data`
+        );
+        return res.status(400).json(result);
+      }
+    }
+
+    if (type == "exam") {
+      let dueDate = data["dueDate"];
+      let maxScore = data["maxScore"];
+      let score = "?";
+      let title = data["title"];
+      let description = data["description"];
+      if (!dueDate || !maxScore || !title || !description) {
+        logWrite.info(
+          `Did not create post for ${res.locals.username}: Invalid data`
+        );
+        return res.status(400).json(result);
+      }
+    }
+
     // check if user has permissions
-    let username = cookies.username;
+    let username = res.locals.username;
     let rankResult = await checkRank(
       username,
       configuration.authorization.posting.regular
     );
     if (!rankResult.success) {
-      logWrite.info(`Did not create post for ${cookies.username}: Low rank`);
-      res.json(result);
+      logWrite.info(`Did not create post for ${res.locals.username}: Low rank`);
+      res.status(403).json(result);
       return result;
     }
     // sanitize/validate data
     if (!checkHTML(content) || !checkMongoDB(content)) {
       logWrite.info(
-        `Did not create post for ${cookies.username}: Illegal post`
+        `Did not create post for ${res.locals.username}: Illegal post`
       );
-      res.json(result);
+      res.status(400).json(result);
       return result;
     }
     let userObject = await safeFindUserByUsername(username);
     // we already know username exists because we checked it
     let userID = userObject?._id || "";
-    addPost(content, username, userID);
-    logWrite.info(`Successfully created new post for ${cookies.username}`);
+    // addPost(content, username, userID, targetGroupID);
+    addPost(content, username, userID, targetGroupID, type, data);
+    logWrite.info(`Successfully created new post for ${res.locals.username}`);
     result.success = true;
-    res.json(result);
+    res.status(200).json(result);
     return result;
   }
 );

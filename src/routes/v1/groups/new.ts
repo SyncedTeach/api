@@ -7,56 +7,56 @@ import { checkHTML, checkMongoDB } from "../../../utilities/sanitize";
 import { addGroup } from "../../../services/group";
 import { logWrite } from "../../../utilities/log";
 import configuration from "../../../configuration.json";
+import { authenticationChecker } from "../../../middlewares/authentication";
 var jsonParser = bodyParser.json();
 var router = express.Router();
 // TODO: add logging
 router.post(
   "/v1/groups/new",
-  [jsonParser, cookieParser()],
+  /**
+   * This route allows an authorized user to create a new group.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.body.name The name of the new group.
+   * @returns An object with the key `success`.
+   */
+  [jsonParser, cookieParser(), authenticationChecker],
   async (req: express.Request, res: express.Response) => {
-    let name = req.body["group-name"];
+    let name = req.body["name"];
     let result = {
       success: false,
+      id: "",
     };
-    // check if user is real
-    let cookies = req.cookies;
-    let cookieResult = await checkOwnerOfToken(
-      cookies.sessionToken || "",
-      cookies.username || ""
-    );
-    if (!cookieResult.success) {
-      logWrite.info(
-        `Did not create group for ${cookies.username}: Invalid cookies`
-      );
-      res.json(result);
-      return result;
-    }
     // check if user has permissions
-    let username = cookies.username;
+    let username = res.locals.username;
     let rankResult = await checkRank(
       username,
       configuration.authorization.groups.create
     );
     if (!rankResult.success) {
-      logWrite.info(`Did not create group for ${cookies.username}: Low rank`);
-      res.json(result);
+      logWrite.info(
+        `Did not create group for ${res.locals.username}: Low rank`
+      );
+      res.status(403).json(result);
       return result;
     }
     // sanitize/validate data
     if (!checkHTML(name) || !checkMongoDB(name)) {
       logWrite.info(
-        `Did not create group for ${cookies.username}: Illegal group`
+        `Did not create group for ${res.locals.username}: Illegal group name "${name}"`
       );
-      res.json(result);
+      res.status(400).json(result);
       return result;
     }
     let userObject = await safeFindUserByUsername(username);
     // we already know username exists because we checked it
     let userID = userObject?._id || "";
-    addGroup(name, username, userID);
-    logWrite.info(`Successfully created new group for ${cookies.username}`);
+    let newGroup = await addGroup(name, username, userID);
+    logWrite.info(`Successfully created new group for ${res.locals.username}`);
     result.success = true;
-    res.json(result);
+    result.id = newGroup;
+    res.status(200).json(result);
     return result;
   }
 );

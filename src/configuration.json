@@ -39,6 +39,13 @@
         "superAdministrator",
         "teacher"
       ]
+    },
+    "keys": {
+      "create": [
+        "administrator",
+        "superAdministrator",
+        "teacher"
+      ]
     }
   }
 }

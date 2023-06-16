@@ -9,6 +9,15 @@ var router = express.Router();
 router.post(
   "/v1/register",
   jsonParser,
+  /**
+   * This route allows registration of new users.
+   * @function
+   * @param {express.Request} req The request object.
+   * @param {express.Response} res The response object.
+   * @param {string} req.body.username The target username for the new user.
+   * @param {string} req.body.password The target password for the new user. (will be hashed)
+   * @param {string} req.body.personal_email The target e-mail for the new user.
+   */
   async (req: express.Request, res: express.Response) => {
     let username = req.body.username;
     let password = req.body.password;
@@ -60,6 +69,8 @@ router.post(
         error: "Email not authorized!",
       });
     }
+
+    res.cookie("username", username, { httpOnly: true, sameSite: "strict" });
 
     logWrite.info("register request!");
     res.json(await register(username, password, email));

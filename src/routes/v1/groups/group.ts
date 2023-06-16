@@ -131,10 +131,15 @@ router.get(
     let group = await Group.findOne({
       joinCode: req.params.joinCode,
     }).lean();
+
+
     if (!group) {
       logWrite.info(`Group ${group} not found.`);
+      res.status(404).json(result);
       return result;
     }
+
+    logWrite.info(`Group ${group} found.`);
     let groupMembers = group.members.length;
     result.success = true;
     result.group = {
